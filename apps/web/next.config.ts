@@ -2,6 +2,13 @@ import type { NextConfig } from "next";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3102";
 
+const apiUrlParsed = new URL(apiUrl);
+const apiImagePattern: { protocol: "http" | "https"; hostname: string; port?: string } = {
+  protocol: apiUrlParsed.protocol === "https:" ? "https" : "http",
+  hostname: apiUrlParsed.hostname,
+};
+if (apiUrlParsed.port) apiImagePattern.port = apiUrlParsed.port;
+
 const nextConfig: NextConfig = {
   output: "standalone",
   async redirects() {
@@ -20,7 +27,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "placehold.co" },
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "http", hostname: new URL(apiUrl).hostname, port: new URL(apiUrl).port },
+      apiImagePattern,
     ],
   },
 };
