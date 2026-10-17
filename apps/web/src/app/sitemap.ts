@@ -3,7 +3,13 @@ import { apiServer, SITE_URL, type ListResponse, type Post } from "@/lib/api";
 
 export const revalidate = 3600;
 
+// NO_INDEX=true → situs privat/staging: sitemap dikosongkan agar tidak
+// membantu mesin pencari mengindeks halaman apa pun.
+const noIndex = process.env.NO_INDEX === "true";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  if (noIndex) return [];
+
   const base = SITE_URL;
   const staticRoutes = [
     "",
