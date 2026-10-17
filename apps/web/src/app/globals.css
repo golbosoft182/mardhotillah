@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary Green #1D8F61 — header, tombol, CTA utama, active states */
+  --color-brand-50: #e7f6ef;
+  --color-brand-100: #c9ecdd;
+  --color-brand-200: #9adcc2;
+  --color-brand-300: #64c7a1;
+  --color-brand-400: #36ac7c;
+  --color-brand-500: #1d8f61;
+  --color-brand-600: #177d53;
+  --color-brand-700: #126945;
+  --color-brand-800: #0e5136;
+  --color-brand-900: #0a3a27;
+  /* Accent Gold #D9A22B — highlight, ikon aksen, border detail, link (di atas gelap) */
+  --color-gold-400: #d9a22b;
+  --color-gold-500: #b5851e;
+  --color-gold-100: #f8eed4;
+  --color-sun-400: #eab540;
+  /* Netral brand system */
+  --color-cream: #f7f3e8;   /* Warm Cream — latar halaman mode terang */
+  --color-mint: #e1faf1;    /* Mint Tint — backdrop sekunder, kartu info, highlight form */
+  --color-ink: #1a1a1a;     /* Dark Charcoal — teks body di atas terang */
+  --color-ink-soft: #55585c;
+
+  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(14 81 54 / 0.06), 0 8px 24px -12px rgb(14 81 54 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(14 81 54 / 0.08), 0 16px 40px -16px rgb(14 81 54 / 0.28);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream text-ink font-body antialiased;
+}
+
+/* Aksesibilitas: fokus terlihat jelas */
+:focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: white;
+}
+
+/* Subtle Islamic geometric pattern accent */
+.pattern-islamic {
+  background-image: url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 4l6 18h18l-14.5 10.5L43 51 28 40 13 51l5.5-18.5L4 22h18z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+}
+
+.pattern-islamic-dark {
+  background-image: url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 4l6 18h18l-14.5 10.5L43 51 28 40 13 51l5.5-18.5L4 22h18z' fill='%230e5136' fill-opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* Scrollbar halus untuk carousel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ============ Popup PPDB: lebar dapat diatur via CMS (per perangkat) ============ */
+/* Nilai default CSS var dioper dari komponen lewat style={{ --w-mobile: ... }} */
+.popup-width {
+  width: var(--w-mobile, 300px);
+}
+@media (min-width: 640px) {
+  .popup-width {
+    width: var(--w-tablet, 360px);
+  }
+}
+@media (min-width: 1024px) {
+  .popup-width {
+    width: var(--w-desktop, 440px);
+  }
+}
+
+/* Prose ringan untuk konten CMS */
+.cms-content h2 { @apply text-2xl font-display font-bold text-brand-700 mt-8 mb-3; }
+.cms-content h3 { @apply text-xl font-display font-semibold text-ink mt-6 mb-2; }
+.cms-content p { @apply leading-relaxed text-ink-soft mb-4; }
+.cms-content ul { @apply list-disc pl-6 mb-4 text-ink-soft space-y-1; }
+.cms-content ol { @apply list-decimal pl-6 mb-4 text-ink-soft space-y-1; }
+.cms-content a { @apply text-brand-500 underline underline-offset-2; }
+.cms-content img { @apply rounded-xl my-4; }
+.cms-content blockquote { @apply border-l-4 border-gold-400 pl-4 italic text-ink-soft my-4; }

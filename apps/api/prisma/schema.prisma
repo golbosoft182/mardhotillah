@@ -1,0 +1,608 @@
+// Schema database Yayasan Mardhotillah — multi-unit content architecture
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ ENUMS ============
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  OSIS
+}
+
+enum Unit {
+  YAYASAN
+  PONPES
+  SMP
+  SMK
+}
+
+enum Status {
+  DRAFT
+  REVIEW
+  PUBLISHED
+}
+
+enum PostType {
+  BERITA
+  ARTIKEL
+  OPINI
+  POJOK_SISWA
+}
+
+enum GalleryKind {
+  FOTO
+  VIDEO
+}
+
+enum DocumentType {
+  LEGALITAS
+  FORMULIR
+  BROSUR
+  LAINNYA
+}
+
+enum MenuLocation {
+  HEADER
+  FOOTER
+}
+
+// ============ AUTH & USERS ============
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(OSIS)
+  unit      Unit? // pembatasan unit untuk non-superadmin (null = semua unit)
+  avatar    String?
+  bio       String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts         Post[]
+  media         Media[]
+  pages         Page[]  @relation("PageAuthor")
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// ============ CONTENT CORE ============
+
+model Post {
+  id             String    @id @default(cuid())
+  unit           Unit      @default(YAYASAN)
+  type           PostType  @default(BERITA)
+  title          String
+  slug           String    @unique
+  excerpt        String?   @db.Text
+  content        String?   @db.Text
+  featuredImage  String?
+  ogImage        String?
+  status         Status    @default(DRAFT)
+  authorId       String?
+  categoryId     String?
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?   @db.Text
+  ogTitle        String?
+  ogDescription  String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  viewCount      Int       @default(0)
+
+  author     User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  category   Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags       PostTag[]
+  comments   Comment[]
+
+  @@index([unit, type, status])
+  @@index([status, publishedAt])
+  @@map("posts")
+}
+
+model Category {
+  id      String  @id @default(cuid())
+  name    String
+  slug    String  @unique
+  unit    Unit? // null = global
+  type    PostType @default(BERITA)
+  createdAt DateTime @default(now())
+
+  posts Post[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  unit           Unit? // null = global
+  title          String
+  slug           String   @unique
+  content        String?  @db.Text
+  heroImage      String?
+  status         Status   @default(DRAFT)
+  authorId       String?
+  publishedAt    DateTime?
+  parentId       String?
+  seoTitle       String?
+  seoDescription String?  @db.Text
+  ogImage        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  author   User?   @relation("PageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  parent   Page?   @relation("PageTree", fields: [parentId], references: [id])
+  children Page[]  @relation("PageTree")
+
+  @@index([unit, status])
+  @@map("pages")
+}
+
+model Event {
+  id             String   @id @default(cuid())
+  unit           Unit     @default(YAYASAN)
+  title          String
+  slug           String   @unique
+  description    String?  @db.Text
+  content        String?  @db.Text
+  location       String?
+  featuredImage  String?
+  startDate      DateTime
+  endDate        DateTime?
+  allDay         Boolean  @default(false)
+  status         Status   @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([unit, startDate])
+  @@map("events")
+}
+
+model Activity {
+  id             String    @id @default(cuid())
+  unit           Unit      @default(YAYASAN)
+  title          String
+  slug           String    @unique
+  description    String?   @db.Text
+  image          String?
+  category       String?
+  order          Int       @default(0)
+  featured       Boolean   @default(false)
+  status         Status    @default(DRAFT)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([unit, order])
+  @@map("activities")
+}
+
+model Achievement {
+  id            String    @id @default(cuid())
+  unit          Unit      @default(YAYASAN)
+  studentName   String
+  photo         String?
+  className     String?
+  competition   String
+  category      String?
+  rank          String?
+  organizer     String?
+  date          DateTime?
+  year          Int?
+  description   String?   @db.Text
+  type          String    @default("SISWA") // SISWA | GURU | LEMBAGA
+  status        Status    @default(DRAFT)
+  publishedAt   DateTime?
+  seoTitle      String?
+  seoDescription String?  @db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([unit, year, type])
+  @@map("achievements")
+}
+
+model Program {
+  id             String   @id @default(cuid())
+  unit           Unit? // null = tampil di semua unit
+  name           String
+  slug           String   @unique
+  description    String?  @db.Text
+  content        String?  @db.Text
+  icon           String?
+  image          String?
+  featured       Boolean  @default(false)
+  order          Int      @default(0)
+  status         Status   @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("programs")
+}
+
+model Extracurricular {
+  id          String   @id @default(cuid())
+  unit        Unit     @default(YAYASAN)
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  image       String?
+  schedule    String?
+  order       Int      @default(0)
+  status      Status   @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("extracurriculars")
+}
+
+// ============ GALLERY & MEDIA ============
+
+model Gallery {
+  id          String      @id @default(cuid())
+  unit        Unit? // null = global
+  title       String
+  slug        String      @unique
+  description String?     @db.Text
+  coverImage  String?
+  kind        GalleryKind @default(FOTO)
+  status      Status      @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  items GalleryItem[]
+
+  @@map("galleries")
+}
+
+model GalleryItem {
+  id        String  @id @default(cuid())
+  galleryId String
+  url       String
+  caption   String?
+  alt       String?
+  order     Int     @default(0)
+
+  gallery Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@map("gallery_items")
+}
+
+model Media {
+  id           String   @id @default(cuid())
+  filename     String
+  url          String
+  mimeType     String
+  size         Int
+  width        Int?
+  height       Int?
+  alt          String?
+  title        String?
+  folder       String?  @default("/")
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  uploadedBy User? @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  @@map("media")
+}
+
+// ============ PEOPLE ============
+
+model Teacher {
+  id          String  @id @default(cuid())
+  unit        Unit    @default(YAYASAN)
+  name        String
+  position    String?
+  subject     String?
+  photo       String?
+  email       String?
+  phone       String?
+  education   String?
+  bio         String? @db.Text
+  order       Int     @default(0)
+  isPimpinan  Boolean @default(false)
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("teachers")
+}
+
+model Staff {
+  id        String  @id @default(cuid())
+  unit      Unit    @default(YAYASAN)
+  name      String
+  position  String?
+  photo     String?
+  email     String?
+  order     Int     @default(0)
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("staff")
+}
+
+// ============ FACILITIES & DOCUMENTS ============
+
+model Facility {
+  id          String   @id @default(cuid())
+  unit        Unit     @default(YAYASAN)
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  image       String?
+  order       Int      @default(0)
+  status      Status   @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("facilities")
+}
+
+model Document {
+  id        String      @id @default(cuid())
+  unit      Unit        @default(YAYASAN)
+  title     String
+  type      DocumentType @default(LAINNYA)
+  fileUrl   String
+  description String?
+  order     Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("documents")
+}
+
+// ============ SPMB ============
+
+model SpmbPeriod {
+  id          String   @id @default(cuid())
+  name        String // "SPMB 2026/2027"
+  year        String
+  isActive    Boolean  @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
+  brochureUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  content SpmbContent[]
+  faqs    SpmbFaq[]
+
+  @@map("spmb_periods")
+}
+
+model SpmbContent {
+  id       String  @id @default(cuid())
+  periodId String
+  section  String // hero | why | timeline | requirements | fees | process | testimonial | contact
+  title    String?
+  body     String? @db.Text
+  data     Json?
+  order    Int     @default(0)
+
+  period SpmbPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+
+  @@index([periodId, section])
+  @@map("spmb_contents")
+}
+
+model SpmbFaq {
+  id       String  @id @default(cuid())
+  periodId String?
+  question String
+  answer   String  @db.Text
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  period SpmbPeriod? @relation(fields: [periodId], references: [id], onDelete: SetNull)
+
+  @@map("spmb_faqs")
+}
+
+// ============ NAVIGATION ============
+
+model Menu {
+  id       String      @id @default(cuid())
+  name     String
+  location MenuLocation @default(HEADER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  items MenuItem[]
+
+  @@map("menus")
+}
+
+model MenuItem {
+  id       String  @id @default(cuid())
+  menuId   String
+  label    String
+  url      String
+  order    Int     @default(0)
+  parentId String?
+
+  menu     Menu        @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  parent   MenuItem?   @relation("MenuTree", fields: [parentId], references: [id])
+  children MenuItem[]  @relation("MenuTree")
+
+  @@map("menu_items")
+}
+
+// ============ SEO & SETTINGS ============
+
+model SeoSetting {
+  id          String  @id @default(cuid())
+  pageKey     String  @unique // home, ponpes, smp, smk, spmb, berita, ...
+  title       String?
+  description String? @db.Text
+  ogImage     String?
+  noIndex     Boolean @default(false)
+  canonicalOverride String?
+  extra       Json?
+
+  @@map("seo_settings")
+}
+
+model Redirect {
+  id         String   @id @default(cuid())
+  fromPath   String   @unique
+  toPath     String
+  statusCode Int      @default(301)
+  createdAt  DateTime @default(now())
+
+  @@map("redirects")
+}
+
+model Setting {
+  key   String @id
+  value Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model Student {
+  id          String  @id @default(cuid())
+  unit        Unit    @default(YAYASAN)
+  name        String
+  className   String?
+  photo       String?
+  bio         String? @db.Text
+  featured    Boolean @default(false)
+  status      Status  @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("students")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  name      String
+  email     String
+  body      String   @db.Text
+  isApproved Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+/// Konten section beranda yang dapat diatur via CMS
+model HomeSection {
+  id     String @id @default(cuid())
+  key    String @unique // ecosystem, benefits, programs, wall_of_fame, activities, spmb_cta
+  label  String
+  data   Json
+  isActive Boolean @default(true)
+  updatedAt DateTime @updatedAt
+
+  @@map("home_sections")
+}
+
+/// Popup SPMB/PPDB — flyer gambar + link, tampil di semua halaman
+/// `unit` null = popup umum (Yayasan); nilai unit = popup khusus jenjang tersebut
+model Popup {
+  id        String   @id @default(cuid())
+  title     String
+  imageUrl  String
+  /// Jenjang yang dituju popup (PONPES/SMP/SMK) — null berarti umum/Yayasan
+  unit      Unit?
+  linkUrl   String   @default("/spmb")
+  buttonText String  @default("DAFTAR SEKARANG")
+  /// Lebar popup dalam piksel, bisa diatur per perangkat via CMS
+  widthDesktop Int   @default(440)
+  widthTablet  Int   @default(360)
+  widthMobile  Int   @default(300)
+  isActive  Boolean  @default(true)
+  startDate DateTime?
+  endDate   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("popups")
+}
+
+/// Pendaftaran online PPDB — diisi calon peserta didik via website, diverifikasi admin
+model PpdbRegistration {
+  id             String   @id @default(cuid())
+  regCode        String   @unique // kode pendaftaran, mis. PPDB-2026-XXXX
+  fullName       String
+  nickname       String?
+  gender         String // MALE | FEMALE
+  birthPlace     String?
+  birthDate      DateTime?
+  address        String?
+  unit           String // PONPES | SMP | SMK
+  previousSchool String?
+  parentName     String
+  parentPhone    String
+  parentEmail    String?
+  notes          String?
+  status         String   @default("PENDING") // PENDING | VERIFIED | REJECTED
+  verifiedAt     DateTime?
+  verifiedBy     String?
+  periodId       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([unit])
+  @@map("ppdb_registrations")
+}

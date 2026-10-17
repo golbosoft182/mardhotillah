@@ -1,0 +1,15 @@
+node_modules/
+.next/
+dist/
+.env
+.env.local
+*.local
+uploads/
+apps/api/uploads/
+npm-debug.log*
+.DS_Store
+tsconfig.tsbuildinfo
+.cloudflared/
+.freebuff/
+apps/api/dist/
+apps/api/node_modules/
