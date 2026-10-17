@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { LogIn, Loader2, Lock, Mail } from "lucide-react";
-
-const DEMO = [
-  { role: "Super Admin", email: "superadmin@yayasanmardhotillah.com", password: "SuperAdmin123!" },
-  { role: "Admin", email: "admin@yayasanmardhotillah.com", password: "Admin123!" },
-  { role: "Editor", email: "editor@yayasanmardhotillah.com", password: "Editor123!" },
-  { role: "OSIS", email: "osis@yayasanmardhotillah.com", password: "Osis123!" },
-];
+import Link from "next/link";import { LogIn, Loader2, Lock, Mail } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -118,24 +110,6 @@ export default function LoginPage() {
               {loading ? "Memproses..." : "Masuk"}
             </button>
           </form>
-
-          {/* Akun demo */}
-          <div className="mt-8 rounded-2xl border border-dashed border-brand-200 bg-white/60 p-4">
-            <p className="text-xs font-display font-bold uppercase tracking-wider text-ink-soft">Akun Demo (klik untuk isi otomatis)</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              {DEMO.map((d) => (
-                <button
-                  key={d.role}
-                  type="button"
-                  onClick={() => { setEmail(d.email); setPassword(d.password); }}
-                  className="rounded-xl bg-brand-50 px-3 py-2 text-left text-xs transition hover:bg-brand-100"
-                >
-                  <span className="block font-display font-bold text-brand-700">{d.role}</span>
-                  <span className="text-ink-soft">{d.email}</span>
-                </button>
-              ))}
-            </div>
-          </div>
 
           <p className="mt-6 text-center text-xs text-ink-soft">
             <Link href="/" className="underline hover:text-brand-600">← Kembali ke website</Link>
