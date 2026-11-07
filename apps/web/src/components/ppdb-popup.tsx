@@ -14,24 +14,29 @@ const TABS: { key: string; label: string }[] = [
   { key: "SMK", label: "SMK" },
 ];
 
+/** Kunci tab sebuah popup: unit kosong/YAYASAN = tab umum (Yayasan) */
+function tabKey(popup: PopupData): string {
+  if (!popup.unit || popup.unit === "YAYASAN") return "UMUM";
+  return popup.unit;
+}
+
 /**
- * Popup PPDB — tampil di semua halaman setiap kali halaman dimuat.
+ * Popup SPMB — tampil di semua halaman setiap kali halaman dimuat.
  * Jika ada lebih dari satu popup aktif, pengunjung dapat memilih jenjang
  * (Yayasan/Ponpes/SMP/SMK) lewat tab di dalam popup.
- * Dikontrol dari CMS Admin → menu "Popup PPDB".
+ * Dikontrol dari CMS Admin → menu "Popup SPMB".
  */
 export function PpdbPopup({ popups }: { popups: PopupData[] }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeUnit, setActiveUnit] = useState<string>("UMUM");
+  // Tab aktif = pilihan pengunjung; null berarti pakai popup pertama yang tersedia
+  const [activeUnit, setActiveUnit] = useState<string | null>(null);
 
-  const tabs = useMemo(
-    () => TABS.filter((t) => popups.some((p) => (p.unit ?? "UMUM") === t.key)),
-    [popups],
-  );
+  // Tab hanya untuk jenjang yang benar-benar punya popup aktif — yang kosong tidak ditampilkan
+  const tabs = useMemo(() => TABS.filter((t) => popups.some((p) => tabKey(p) === t.key)), [popups]);
 
   const current = useMemo(
-    () => popups.find((p) => (p.unit ?? "UMUM") === activeUnit) ?? popups[0] ?? null,
+    () => (activeUnit ? popups.find((p) => tabKey(p) === activeUnit) : undefined) ?? popups[0] ?? null,
     [popups, activeUnit],
   );
 
@@ -87,7 +92,7 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          aria-label="Tutup pengumuman PPDB"
+          aria-label="Tutup pengumuman SPMB"
           className={`absolute right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white transition hover:bg-black/70 ${
             showTabs ? "top-12" : "top-3"
           }`}
@@ -99,11 +104,11 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
         {showTabs && (
           <div
             role="tablist"
-            aria-label="Pilih jenjang PPDB"
+            aria-label="Pilih jenjang SPMB"
             className="grid grid-flow-col auto-cols-fr border-b border-brand-100 bg-white"
           >
             {tabs.map((t) => {
-              const selected = (current.unit ?? "UMUM") === t.key;
+              const selected = tabKey(current) === t.key;
               return (
                 <button
                   key={t.key}
@@ -127,7 +132,7 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
           href={current.linkUrl || "/ppdb"}
           onClick={() => setOpen(false)}
           className="group block"
-          aria-label={`${current.title} — buka halaman PPDB`}
+          aria-label={`${current.title} — buka halaman SPMB`}
         >
           <div className="relative aspect-[4/5] w-full bg-brand-100">
             <Image

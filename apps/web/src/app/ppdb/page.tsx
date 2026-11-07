@@ -13,10 +13,10 @@ export const revalidate = 60;
 export async function generateMetadata() {
   const seo = await apiServer<{ title?: string; description?: string }>("/seo/ppdb");
   return {
-    title: seo?.title ?? "PPDB — Seleksi Penerimaan Murid Baru",
+    title: seo?.title ?? "SPMB — Seleksi Penerimaan Murid Baru",
     description:
       seo?.description ??
-      "Informasi lengkap PPDB Yayasan Mardhotillah: pendaftaran online, persyaratan, jadwal, biaya, dan FAQ.",
+      "Informasi lengkap SPMB Yayasan Mardhotillah: pendaftaran online, persyaratan, jadwal, biaya, dan FAQ.",
   };
 }
 
@@ -49,12 +49,12 @@ export default async function SpmbPage() {
     return (
       <>
         <div className="pattern-islamic bg-brand-700 py-24 text-center">
-          <h1 className="font-display text-4xl font-bold text-white">PPDB</h1>
+          <h1 className="font-display text-4xl font-bold text-white">SPMB</h1>
           <p className="mt-3 text-white/70">Seleksi Penerimaan Murid Baru</p>
         </div>
         <Section>
           <EmptyState
-            title="Informasi PPDB belum tersedia"
+            title="Informasi SPMB belum tersedia"
             hint="Panitia sedang mempersiapkan periode pendaftaran berikutnya. Silakan hubungi kami untuk info lebih lanjut."
           />
         </Section>
@@ -110,7 +110,7 @@ export default async function SpmbPage() {
             {ppdb.name}
           </p>
           <h1 className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-            {hero?.title ?? "PPDB Telah Dibuka"}
+            {hero?.title ?? "SPMB Telah Dibuka"}
           </h1>
           {hero?.body && <p className="mx-auto mt-3 max-w-2xl text-base text-white/80 sm:text-lg">{hero.body}</p>}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -136,7 +136,7 @@ export default async function SpmbPage() {
       {/* ===== FORMULIR — langsung setelah hero, sebelum informasi ===== */}
       <Section id="pendaftaran" compact className="pattern-islamic-dark bg-cream">
         <SectionHeading
-          eyebrow="PPDB Online"
+          eyebrow="SPMB Online"
           title="Formulir Pendaftaran Online"
           description="Isi data calon peserta didik untuk unit PONPES, SMP, atau SMK. Setelah terkirim, Anda menerima kode registrasi dan panitia menghubungi via WhatsApp."
         />
@@ -203,7 +203,7 @@ export default async function SpmbPage() {
                   align="left"
                 />
                 <SectionData data={fees.data} />
-                <p className="mt-3 text-xs text-ink-soft">[Informasi PPDB] — Rincian biaya resmi diumumkan oleh panitia.</p>
+                <p className="mt-3 text-xs text-ink-soft">[Informasi SPMB] — Rincian biaya resmi diumumkan oleh panitia.</p>
               </div>
             )}
           </div>

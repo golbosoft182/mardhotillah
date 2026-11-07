@@ -34,14 +34,14 @@ const NAV: { section: string; items: NavItem[] }[] = [
     section: "Kelola",
     items: [
       { href: "/homepage", label: "Konten Beranda", icon: LayoutGrid, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
-      { href: "/popup", label: "Popup PPDB", icon: ImageIcon, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
+      { href: "/popup", label: "Popup SPMB", icon: ImageIcon, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
       { href: "/media", label: "Media", icon: ImageIcon, visible: () => true },
       { href: "/categories", label: "Kategori & Tag", icon: FolderOpen, visible: (u) => u.role !== "OSIS" },
       { href: "/programs", label: "Program & Ekstra", icon: LayoutGrid, visible: (u) => u.role !== "OSIS" },
       { href: "/teachers", label: "Guru & Tendik", icon: Users, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
       { href: "/facilities", label: "Fasilitas", icon: Wrench, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
-      { href: "/ppdb", label: "PPDB", icon: FileDown, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
-      { href: "/ppdb-list", label: "List PPDB", icon: ClipboardList, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
+      { href: "/ppdb", label: "SPMB", icon: FileDown, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
+      { href: "/ppdb-list", label: "List SPMB", icon: ClipboardList, visible: (u) => ["SUPER_ADMIN", "ADMIN"].includes(u.role) },
     ],
   },
   {

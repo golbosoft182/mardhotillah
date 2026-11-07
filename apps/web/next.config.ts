@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   async redirects() {
     return [
-      // SPMB lama → PPDB (permanen)
+      // Alias /spmb → halaman pendaftaran di /ppdb (permanen, link lama tetap jalan)
       { source: "/spmb", destination: "/ppdb", permanent: true },
       { source: "/spmb/:path*", destination: "/ppdb/:path*", permanent: true },
     ];

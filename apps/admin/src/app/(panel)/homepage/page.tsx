@@ -23,7 +23,7 @@ const SECTION_META: Record<string, { title: string; hint: string; itemType: "uni
   hero_slides: { title: "Hero Slider", hint: "Foto + caption beranda yang tampil bergantian (slider)", itemType: "units" },
   ecosystem: { title: "Ekosistem Pendidikan", hint: "3 kartu satuan pendidikan di beranda", itemType: "units" },
   benefits: { title: "Mengapa Mardhotillah?", hint: "6 keunggulan dengan ikon", itemType: "text" },
-  spmb_cta: { title: "CTA PPDB", hint: "Bagian ajakan daftar di bawah beranda", itemType: "text" },
+  spmb_cta: { title: "CTA SPMB", hint: "Bagian ajakan daftar di bawah beranda", itemType: "text" },
 };
 
 const UNIT_FIELDS = ["name", "tagline", "description", "href", "image"];
@@ -150,7 +150,7 @@ export default function HomepageAdminPage() {
     <>
       <PageHeader
         title="Konten Beranda"
-        description="Kelola isi setiap section halaman depan — hero slider, kartu unit, keunggulan, dan CTA PPDB."
+        description="Kelola isi setiap section halaman depan — hero slider, kartu unit, keunggulan, dan CTA SPMB."
       />
       <ErrorAlert message={error} />
       <SuccessAlert message={success} />
@@ -173,7 +173,7 @@ export default function HomepageAdminPage() {
                   loading={savingKey === key}
                   onClick={() => {
                     if (slideEditor === null) {
-                      addItem(key, { image: "", eyebrow: "", title: "Slide Baru", description: "", primaryButton: "DAFTAR PPDB", primaryLink: "/ppdb", secondaryButton: "", secondaryLink: "" });
+                      addItem(key, { image: "", eyebrow: "", title: "Slide Baru", description: "", primaryButton: "DAFTAR SPMB", primaryLink: "/ppdb", secondaryButton: "", secondaryLink: "" });
                       setSlideIsNew(true);
                       setSlideEditor(slides.length);
                     } else {

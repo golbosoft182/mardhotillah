@@ -14,9 +14,9 @@ Situs resmi **Yayasan Mardhotillah** (Ponpes · SMP · SMK) yang dibangun sebaga
 ## ✨ Fitur Utama
 
 ### Website Publik (apps/web)
-- **Semua konten dinamis dari CMS** — tidak ada teks hardcode: hero, section beranda, berita, agenda, prestasi, galeri, program, fasilitas, guru, halaman tentang, PPDB, menu navigasi, kontak, pengumuman.
+- **Semua konten dinamis dari CMS** — tidak ada teks hardcode: hero, section beranda, berita, agenda, prestasi, galeri, program, fasilitas, guru, halaman tentang, SPMB, menu navigasi, kontak, pengumuman.
 - **Mega menu** desktop (panel multi-kolom + kartu promo) dan drawer accordion di mobile.
-- **Popup PPDB** — flyer + link tampil di semua halaman tiap refresh, bisa ditutup (✕ pojok kanan atas), jadwal tayang & ukuran per perangkat (desktop/tablet/mobile) diatur dari CMS.
+- **Popup SPMB** — flyer + link tampil di semua halaman tiap refresh, bisa ditutup (✕ pojok kanan atas), jadwal tayang & ukuran per perangkat (desktop/tablet/mobile) diatur dari CMS.
 - **Multi-bahasa otomatis** — Indonesia (default) / English / Arabic via Google Translate, tombol bendera di topbar.
 - **Topbar**: jam sistem live (hari, tanggal, jam WIB) + pemilih bahasa.
 - **SEO lengkap**: metadata & OpenGraph dinamis per halaman, JSON-LD Article, sitemap.xml, robots.txt, redirect 301, canonical.
@@ -32,10 +32,10 @@ Panel sederhana — tidak rumit — dengan menu:
 | **Halaman** | Profil, sejarah, visi-misi, struktur, dll. |
 | **Agenda / Prestasi / Galeri** | Kegiatan mendatang, wall of fame, album & momen foto |
 | **Konten Beranda** | Edit semua section beranda (kartu unit, keunggulan, aktivitas, CTA) |
-| **Popup PPDB** | Ganti flyer/link/jadwal/ukuran popup setiap tahun ajaran |
+| **Popup SPMB** | Ganti flyer/link/jadwal/ukuran popup setiap tahun ajaran |
 | **Media** | Upload & kelola gambar |
 | **Kategori & Tag / Program / Guru / Fasilitas** | Master data konten |
-| **PPDB** | Periode PPDB, persyaratan, jadwal, alur, biaya, FAQ |
+| **SPMB** | Periode SPMB, persyaratan, jadwal, alur, biaya, FAQ |
 | **Menu Navigasi** | Susun menu header (sub-menu otomatis jadi mega menu) |
 | **SEO** | Metadata tiap halaman kunci |
 | **Pengguna** | Kelola user & role (Super Admin/Admin saja) |
@@ -52,7 +52,7 @@ Panel sederhana — tidak rumit — dengan menu:
 | Role | Baca | Buat/Ubah | Hapus | Khusus |
 | --- | --- | --- | --- | --- |
 | **SUPER_ADMIN** | ✅ semua | ✅ | ✅ | User, pengaturan, semua unit |
-| **ADMIN** | ✅ semua | ✅ | ✅ | SEO, menu, PPDB, media |
+| **ADMIN** | ✅ semua | ✅ | ✅ | SEO, menu, SPMB, media |
 | **EDITOR** | ✅ semua | ✅ | ❌ | Tidak bisa hapus data |
 | **OSIS** | ✅ | Hanya artikel sekolah miliknya | ❌ | Status wajib **Draft/Review** → Admin yang mem-publish |
 
@@ -179,9 +179,9 @@ Buka **http://localhost:3102/docs** — semua endpoint terdokumentasi + bisa dic
 | GET | `/api/galleries` | publik | Galeri (termasuk `items` foto) |
 | GET | `/api/home-sections` | publik | Section beranda |
 | PUT | `/api/home-sections/:key` | ADMIN | Update section (key: `ecosystem`, `benefits`, `activities`, `spmb_cta`) |
-| GET | `/api/popup/active` | publik | Popup PPDB aktif |
+| GET | `/api/popup/active` | publik | Popup SPMB aktif |
 | GET/POST/PUT/DELETE | `/api/popup` | ADMIN | Kelola popup (satu aktif) |
-| GET | `/api/ppdb/active` | publik | Konten PPDB + FAQ periode aktif |
+| GET | `/api/ppdb/active` | publik | Konten SPMB + FAQ periode aktif |
 | GET/PUT | `/api/settings` | publik / ADMIN | Pengaturan situs |
 | GET/PUT | `/api/seo/:pageKey` | publik / ADMIN | SEO per halaman |
 | GET/POST | `/api/menus` | publik / ADMIN | Menu navigasi (nested) |
@@ -201,7 +201,7 @@ curl "http://localhost:3102/api/posts?limit=5&status=PUBLISHED"
 # update pengumuman berjalan
 curl -X PUT http://localhost:3102/api/settings \
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"announcement_text":"PPDB gelombang 2 dibuka 1 April"}'
+  -d '{"announcement_text":"SPMB gelombang 2 dibuka 1 April"}'
 ```
 
 ---
@@ -333,7 +333,7 @@ gunzip -c backup-2026-09-27.sql.gz | docker compose exec -T db psql -U mardhotil
 
 - [ ] Ganti `POSTGRES_PASSWORD` & `JWT_SECRET` (min. 32 karakter acak)
 - [ ] Ganti password semua akun demo / buat akun baru, hapus yang tak terpakai
-- [ ] Isi data asli di CMS: Pengaturan (alamat, telp, WA, email, maps), SEO, PPDB, flyer popup
+- [ ] Isi data asli di CMS: Pengaturan (alamat, telp, WA, email, maps), SEO, SPMB, flyer popup
 - [ ] Ganti foto dummy (prestasi, galeri, aktivitas) dengan foto asli via Media
 - [ ] `NEXT_PUBLIC_API_URL` & `NEXT_PUBLIC_SITE_URL` memakai domain + HTTPS
 - [ ] Aktifkan HTTPS (certbot) & firewall (hanya 80/443; port DB **tidak** diekspos publik — hapus mapping `5433` di production)

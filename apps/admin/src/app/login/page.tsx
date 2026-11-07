@@ -45,7 +45,7 @@ export default function LoginPage() {
             Kelola konten website dengan mudah
           </h1>
           <p className="mt-4 max-w-md text-white/70">
-            Satu CMS untuk berita, halaman, agenda, prestasi, galeri, PPDB, dan pengaturan SEO seluruh satuan pendidikan.
+            Satu CMS untuk berita, halaman, agenda, prestasi, galeri, SPMB, dan pengaturan SEO seluruh satuan pendidikan.
           </p>
         </div>
         <p className="text-sm text-white/50">© {new Date().getFullYear()} Yayasan Mardhotillah</p>

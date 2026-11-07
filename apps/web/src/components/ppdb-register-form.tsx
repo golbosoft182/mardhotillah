@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ChevronDown, ClipboardCopy, Loader2, Send, UserRound } from "lucide-react";
 
 /**
- * Formulir pendaftaran online PPDB — publik, untuk unit PONPES / SMP / SMK.
+ * Formulir pendaftaran online SPMB — publik, untuk unit PONPES / SMP / SMK.
  * Mengirim ke POST /api/ppdb/register dan menampilkan kode registrasi setelah sukses.
  */
 
@@ -46,7 +46,7 @@ export function PpdbRegisterForm() {
   const [success, setSuccess] = useState<{ regCode: string; fullName: string; unit: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // Preselect jenjang dari query param (?unit=PONPES|SMP|SMK) — mis. dari tombol popup PPDB
+  // Preselect jenjang dari query param (?unit=PONPES|SMP|SMK) — mis. dari tombol popup SPMB
   const searchParams = useSearchParams();
   useEffect(() => {
     const u = searchParams.get("unit")?.toUpperCase();
@@ -251,7 +251,7 @@ export function PpdbRegisterForm() {
       </div>
 
       <p className="text-xs leading-relaxed text-ink-soft">
-        Dengan mengirim formulir ini, Anda menyetujui data yang diisi digunakan untuk proses pendaftaran PPDB.
+        Dengan mengirim formulir ini, Anda menyetujui data yang diisi digunakan untuk proses pendaftaran SPMB.
         Panitia akan menghubungi melalui WhatsApp untuk verifikasi berkas.
       </p>
 

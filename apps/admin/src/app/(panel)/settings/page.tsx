@@ -90,7 +90,7 @@ export default function SettingsPage() {
             <AdminCard className="space-y-4">
               <h2 className="font-display font-bold text-ink">Pengumuman & Hero Beranda</h2>
               <Field label="Teks Pengumuman (bar atas)" hint="Kosongkan untuk menyembunyikan bar pengumuman">
-                <TextInput value={form.announcement_text ?? ""} onChange={(e) => set("announcement_text", e.target.value)} placeholder="PPDB 2027/2028 telah dibuka — ..." />
+                <TextInput value={form.announcement_text ?? ""} onChange={(e) => set("announcement_text", e.target.value)} placeholder="SPMB 2027/2028 telah dibuka — ..." />
               </Field>
               <Field label="Link Pengumuman" hint="Contoh: /ppdb">
                 <TextInput value={form.announcement_link ?? ""} onChange={(e) => set("announcement_link", e.target.value)} />

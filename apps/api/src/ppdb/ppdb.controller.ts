@@ -30,7 +30,7 @@ export class PpdbController {
   @Public()
   @Post('register')
   @ApiOperation({
-    summary: 'Daftar PPDB online (publik)',
+    summary: 'Daftar SPMB online (publik)',
     description:
       'Formulir pendaftaran online untuk unit PONPES, SMP, atau SMK. ' +
       'Mengembalikan data pendaftaran termasuk kode registrasi unik (regCode) yang ditampilkan ke pendaftar.',
@@ -71,7 +71,7 @@ export class PpdbController {
   @Roles('ADMIN')
   @Get('registrations')
   @ApiOperation({
-    summary: 'Daftar pendaftaran PPDB (terbaru → terlama)',
+    summary: 'Daftar pendaftaran SPMB (terbaru → terlama)',
     description: 'Filter: unit (PONPES/SMP/SMK), status (PENDING/VERIFIED/REJECTED), pencarian q, paginasi page & limit.',
   })
   @ApiQuery({ name: 'unit', required: false, enum: ['PONPES', 'SMP', 'SMK'] })

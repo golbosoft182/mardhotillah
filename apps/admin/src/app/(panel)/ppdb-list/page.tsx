@@ -12,7 +12,7 @@ import {
   SecondaryButton, SuccessAlert,
 } from "@/components/ui";
 
-/** CMS → List PPDB: pendaftaran online dari website, urut terbaru → terlama. */
+/** CMS → List SPMB: pendaftaran online dari website, urut terbaru → terlama. */
 
 interface Reg {
   id: string;
@@ -161,7 +161,7 @@ export default function PpdbListAdminPage() {
   return (
     <>
       <PageHeader
-        title="List PPDB"
+        title="List SPMB"
         description="Pendaftaran online dari website — urut dari terbaru. Verifikasi data calon peserta didik PONPES, SMP, dan SMK di sini."
       />
       <ErrorAlert message={error} />

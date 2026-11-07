@@ -108,7 +108,7 @@ export function HeroSlider({ slides, fallbackPrimary, fallbackSecondary }: Props
       {(() => {
         const slide = slides[active] ?? slides[0];
         const primary = {
-          label: slide.primaryButton ?? fallbackPrimary?.label ?? "DAFTAR PPDB",
+          label: slide.primaryButton ?? fallbackPrimary?.label ?? "DAFTAR SPMB",
           href: slide.primaryLink ?? fallbackPrimary?.href ?? "/ppdb",
         };
         const secondary = {

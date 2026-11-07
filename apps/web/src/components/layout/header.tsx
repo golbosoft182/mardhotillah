@@ -33,18 +33,18 @@ export async function Header() {
       </div>
       {/* Announcement bar — teks diatur dari CMS (Pengaturan → Pengumuman) */}
       {(settings?.announcement_text ??
-        "PPDB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang") && (
+        "SPMB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang") && (
         <div className="bg-brand-800 text-white">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2.5 text-center text-xs sm:text-sm">
             <p>
               <Sparkles className="mr-1 inline h-4 w-4 text-gold-400" aria-hidden />
-              {settings?.announcement_text ?? "PPDB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang"}
+              {settings?.announcement_text ?? "SPMB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang"}
             </p>
             <Link
               href={settings?.announcement_link || "/ppdb"}
               className="inline-flex items-center gap-1 font-display font-bold text-gold-400 underline-offset-4 transition hover:underline"
             >
-              INFO PPDB <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+              INFO SPMB <ArrowRight className="h-3.5 w-3.5" aria-hidden />
             </Link>
           </div>
         </div>
@@ -73,7 +73,7 @@ export async function Header() {
             href="/ppdb"
             className="hidden rounded-full bg-gold-400 px-5 py-2.5 font-display text-sm font-semibold text-brand-800 shadow-card transition hover:bg-sun-400 sm:inline-flex"
           >
-            PPDB
+            SPMB
           </Link>
           <span className="xl:hidden">
             <MegaMenu nav={nav} siteName={settings?.site_name ?? "Yayasan Mardhotillah"} />

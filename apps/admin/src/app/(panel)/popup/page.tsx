@@ -180,8 +180,8 @@ export default function PopupAdminPage() {
   return (
     <>
       <PageHeader
-        title="Popup PPDB"
-        description="Flyer PPDB/PPDB yang tampil di seluruh halaman website setiap kali halaman dimuat. Bisa dibuat per jenjang: Yayasan (umum), Ponpes, SMP, atau SMK."
+        title="Popup SPMB"
+        description="Flyer SPMB yang tampil di seluruh halaman website setiap kali halaman dimuat. Bisa dibuat per jenjang: Yayasan (umum), Ponpes, SMP, atau SMK."
         action={<PrimaryButton type="button" onClick={openCreate}><Plus className="h-4 w-4" aria-hidden /> Buat Popup</PrimaryButton>}
       />
       <ErrorAlert message={error} />
@@ -250,7 +250,7 @@ export default function PopupAdminPage() {
           ))}
         </div>
       ) : (
-        <AdminEmptyState title="Belum ada popup" hint='Klik "Buat Popup" untuk membuat flyer PPDB pertama.' />
+        <AdminEmptyState title="Belum ada popup" hint='Klik "Buat Popup" untuk membuat flyer SPMB pertama.' />
       )}
 
       {/* Modal form */}
@@ -258,10 +258,10 @@ export default function PopupAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div className="absolute inset-0 bg-brand-900/50 backdrop-blur-sm" onClick={() => setModalOpen(false)} aria-hidden />
           <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-lift">
-            <h2 className="mb-5 font-display text-lg font-bold text-ink">{editing ? "Edit Popup" : "Buat Popup PPDB"}</h2>
+            <h2 className="mb-5 font-display text-lg font-bold text-ink">{editing ? "Edit Popup" : "Buat Popup SPMB"}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Field label="Judul" required>
-                <TextInput value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="PPDB 2027/2028 Telah Dibuka" required />
+                <TextInput value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="SPMB 2027/2028 Telah Dibuka" required />
               </Field>
 
               <Field label="Jenjang (Unit)" hint="Popup khusus jenjang menggantikan popup umum di tab jenjang tersebut">

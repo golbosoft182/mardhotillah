@@ -19,7 +19,7 @@ const PAGE_KEYS = [
   { key: "ponpes", label: "Ponpes" },
   { key: "smp", label: "SMP" },
   { key: "smk", label: "SMK" },
-  { key: "spmb", label: "PPDB" },
+  { key: "spmb", label: "SPMB" },
   { key: "berita", label: "Berita" },
   { key: "kontak", label: "Kontak" },
 ];

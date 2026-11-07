@@ -43,7 +43,7 @@ async function main() {
   }
 
   // ---------- TAGS ----------
-  const tagDefs = ['Prestasi', 'Tahfidz', 'PPDB', 'Kegiatan', 'DKV', 'Beasiswa'];
+  const tagDefs = ['Prestasi', 'Tahfidz', 'SPMB', 'Kegiatan', 'DKV', 'Beasiswa'];
   const tags: Record<string, string> = {};
   for (const t of tagDefs) {
     const slug = t.toLowerCase();
@@ -78,7 +78,7 @@ async function main() {
       categoryId: cats['Berita SMP'], status: 'PUBLISHED', daysAgo: 5,
     },
     {
-      unit: 'YAYASAN', type: 'BERITA', title: 'PPDB 2027/2028 Resmi Dibuka Gelombang 1',
+      unit: 'YAYASAN', type: 'BERITA', title: 'SPMB 2027/2028 Resmi Dibuka Gelombang 1',
       excerpt: 'Pendaftaran peserta didik baru Ponpes, SMP, dan SMK Mardhotillah gelombang 1 resmi dibuka. Kuota terbatas.',
       content: '<p>[Konten Yayasan] — Silakan perbarui isi berita ini melalui CMS Admin.</p>',
       image: 'https://images.unsplash.com/photo-1497633762265-9b1799600562?w=1200&q=75',
@@ -291,27 +291,27 @@ async function main() {
     }
   }
 
-  // ---------- PPDB ----------
+  // ---------- SPMB ----------
   const periodExists = await prisma.spmbPeriod.findFirst({ where: { isActive: true } });
   if (!periodExists) {
     const period = await prisma.spmbPeriod.create({
-      data: { name: 'PPDB 2027/2028', year: '2027/2028', isActive: true },
+      data: { name: 'SPMB 2027/2028', year: '2027/2028', isActive: true },
     });
     const contents = [
-      { section: 'hero', title: 'PPDB 2027/2028 Telah Dibuka', body: 'Daftarkan putra-putri Anda bergabung dengan ekosistem pendidikan Mardhotillah.', order: 1 },
+      { section: 'hero', title: 'SPMB 2027/2028 Telah Dibuka', body: 'Daftarkan putra-putri Anda bergabung dengan ekosistem pendidikan Mardhotillah.', order: 1 },
       { section: 'why', title: 'Mengapa Mardhotillah?', body: 'Lingkungan pendidikan yang mengintegrasikan nilai keislaman, ilmu pengetahuan, dan karakter.', order: 2 },
-      { section: 'requirements', title: 'Persyaratan Pendaftaran', body: '[Informasi PPDB] — Lengkapi persyaratan sesuai jenjang.', data: [{ text: 'Mengisi formulir pendaftaran' }, { text: 'Fotokopi ijazah/rapor' }, { text: 'Pas foto terbaru' }], order: 3 },
-      { section: 'timeline', title: 'Jadwal Penting', body: '[Informasi PPDB]', data: [{ label: 'Gelombang 1', text: 'Januari – Maret' }, { label: 'Gelombang 2', text: 'April – Juni' }], order: 4 },
-      { section: 'process', title: 'Alur Pendaftaran', body: '[Informasi PPDB]', data: [{ label: '1', text: 'Isi formulir online' }, { label: '2', text: 'Verifikasi berkas' }, { label: '3', text: 'Tes seleksi' }, { label: '4', text: 'Pengumuman & daftar ulang' }], order: 5 },
-      { section: 'fees', title: 'Biaya Pendidikan', body: '[Informasi PPDB] — Rincian biaya menyesuaikan jenjang.', data: [{ label: 'Jenjang', text: 'Biaya' }], order: 6 },
-      { section: 'contact', title: 'Kontak Panitia', body: '[Informasi PPDB] — Hubungi panitia untuk info lebih lanjut.', data: { wa: '', email: '' }, order: 7 },
+      { section: 'requirements', title: 'Persyaratan Pendaftaran', body: '[Informasi SPMB] — Lengkapi persyaratan sesuai jenjang.', data: [{ text: 'Mengisi formulir pendaftaran' }, { text: 'Fotokopi ijazah/rapor' }, { text: 'Pas foto terbaru' }], order: 3 },
+      { section: 'timeline', title: 'Jadwal Penting', body: '[Informasi SPMB]', data: [{ label: 'Gelombang 1', text: 'Januari – Maret' }, { label: 'Gelombang 2', text: 'April – Juni' }], order: 4 },
+      { section: 'process', title: 'Alur Pendaftaran', body: '[Informasi SPMB]', data: [{ label: '1', text: 'Isi formulir online' }, { label: '2', text: 'Verifikasi berkas' }, { label: '3', text: 'Tes seleksi' }, { label: '4', text: 'Pengumuman & daftar ulang' }], order: 5 },
+      { section: 'fees', title: 'Biaya Pendidikan', body: '[Informasi SPMB] — Rincian biaya menyesuaikan jenjang.', data: [{ label: 'Jenjang', text: 'Biaya' }], order: 6 },
+      { section: 'contact', title: 'Kontak Panitia', body: '[Informasi SPMB] — Hubungi panitia untuk info lebih lanjut.', data: { wa: '', email: '' }, order: 7 },
     ];
     for (const c of contents) {
       await prisma.spmbContent.create({ data: { ...c, periodId: period.id } });
     }
     const faqs = [
-      { question: 'Apakah harus menghafal Al-Qur\'an untuk mendaftar?', answer: '[Informasi PPDB] — Tidak wajib sudah menghafal, akan ada pembinaan tahfidz di sekolah.', order: 1 },
-      { question: 'Apakah tersedia beasiswa?', answer: '[Informasi PPDB] — Informasi beasiswa akan diumumkan oleh panitia.', order: 2 },
+      { question: 'Apakah harus menghafal Al-Qur\'an untuk mendaftar?', answer: '[Informasi SPMB] — Tidak wajib sudah menghafal, akan ada pembinaan tahfidz di sekolah.', order: 1 },
+      { question: 'Apakah tersedia beasiswa?', answer: '[Informasi SPMB] — Informasi beasiswa akan diumumkan oleh panitia.', order: 2 },
       { question: 'Bagaimana alur pendaftaran?', answer: 'Isi formulir online, verifikasi berkas, tes seleksi, lalu daftar ulang.', order: 3 },
     ];
     for (const f of faqs) {
@@ -331,7 +331,7 @@ async function main() {
       { label: 'Publikasi', url: '#publikasi', order: 5 },
       { label: 'Prestasi', url: '/prestasi', order: 6 },
       { label: 'Fasilitas', url: '/fasilitas', order: 7 },
-      { label: 'PPDB', url: '/ppdb', order: 8 },
+      { label: 'SPMB', url: '/ppdb', order: 8 },
       { label: 'Kontak', url: '/kontak', order: 9 },
     ];
     const created: Record<string, string> = {};
@@ -366,7 +366,7 @@ async function main() {
     { pageKey: 'ponpes', title: 'Pondok Pesantren Mardhotillah', description: 'Pendidikan pesantren dengan program tahfidzul Qur\'an, bahasa, dan karakter.' },
     { pageKey: 'smp', title: 'SMP Unggulan Mardhotillah', description: 'SMP dengan program Tahfidz, Bilingual, Leadership, dan Mentorship.' },
     { pageKey: 'smk', title: 'SMK Mardhotillah Plus', description: 'Sekolah Plus Nyantren Makin Keren — program keahlian DKV dengan kesiapan industri kreatif.' },
-    { pageKey: 'ppdb', title: 'PPDB Mardhotillah', description: 'Informasi lengkap Seleksi Penerimaan Murid Baru Yayasan Mardhotillah.' },
+    { pageKey: 'ppdb', title: 'SPMB Mardhotillah', description: 'Informasi lengkap Seleksi Penerimaan Murid Baru Yayasan Mardhotillah.' },
   ];
   for (const s of seoDefs) {
     await prisma.seoSetting.upsert({ where: { pageKey: s.pageKey }, update: {}, create: s });
@@ -382,7 +382,7 @@ async function main() {
     email: '[Email Resmi]',
     maps_embed: '',
     facebook: '#', instagram: '#', youtube: '#',
-    announcement_text: 'PPDB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang',
+    announcement_text: 'SPMB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang',
     announcement_link: '/ppdb',
     hero_title: "Membangun Generasi Qur'ani, Berilmu dan Berkarakter",
     hero_subtitle: 'Pendidikan terpadu Mardhotillah menghadirkan lingkungan pendidikan yang mengintegrasikan nilai keislaman, ilmu pengetahuan, karakter, keterampilan dan pengembangan potensi peserta didik.',
@@ -404,15 +404,15 @@ async function main() {
             description: 'Pendidikan terpadu Mardhotillah menghadirkan lingkungan pendidikan yang mengintegrasikan nilai keislaman, ilmu pengetahuan, karakter, keterampilan dan pengembangan potensi peserta didik.',
             image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80',
             primaryButton: 'JELAJAHI PENDIDIKAN', primaryLink: '#pendidikan',
-            secondaryButton: 'DAFTAR PPDB', secondaryLink: '/ppdb',
+            secondaryButton: 'DAFTAR SPMB', secondaryLink: '/ppdb',
           },
           {
-            eyebrow: 'PPDB 2027/2028 Telah Dibuka',
+            eyebrow: 'SPMB 2027/2028 Telah Dibuka',
             title: 'Wujudkan Masa Depan Cerah Putra-Putri Anda',
             description: 'Pendaftaran peserta didik baru Ponpes, SMP, dan SMK Mardhotillah gelombang 1 telah resmi dibuka. Kuota terbatas.',
             image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1920&q=80',
             primaryButton: 'DAFTAR SEKARANG', primaryLink: '/ppdb',
-            secondaryButton: 'INFO PPDB', secondaryLink: '/ppdb',
+            secondaryButton: 'INFO SPMB', secondaryLink: '/ppdb',
           },
           {
             eyebrow: "Tahfidzul Qur'an · Bilingual · Leadership",
@@ -458,11 +458,11 @@ async function main() {
     },
     {
       key: 'spmb_cta',
-      label: 'CTA PPDB',
+      label: 'CTA SPMB',
       data: {
         heading: 'Siap menjadi bagian dari keluarga Mardhotillah?',
-        description: 'Daftarkan putra-putri Anda melalui PPDB online atau hubungi kami untuk informasi lebih lanjut.',
-        primaryButton: 'DAFTAR PPDB',
+        description: 'Daftarkan putra-putri Anda melalui SPMB online atau hubungi kami untuk informasi lebih lanjut.',
+        primaryButton: 'DAFTAR SPMB',
         primaryLink: '/ppdb',
         secondaryButton: 'HUBUNGI KAMI',
         secondaryLink: '/kontak',
@@ -475,7 +475,7 @@ async function main() {
   // section "activities" dihapus dari beranda — kini jadi halaman /aktivitas dengan CMS tersendiri
   await prisma.homeSection.deleteMany({ where: { key: 'activities' } });
 
-  // ---------- POPUP PPDB (flyer demo — satu per jenjang + umum) ----------
+  // ---------- POPUP SPMB (flyer demo — satu per jenjang + umum) ----------
   const popupCount = await prisma.popup.count();
   if (popupCount === 0) {
     const flyer = (text: string) =>
@@ -483,32 +483,32 @@ async function main() {
     await prisma.popup.createMany({
       data: [
         {
-          title: 'PPDB Yayasan 2027/2028 Telah Dibuka',
-          imageUrl: flyer('Flyer PPDB Yayasan 2027/2028'),
+          title: 'SPMB Yayasan 2027/2028 Telah Dibuka',
+          imageUrl: flyer('Flyer SPMB Yayasan 2027/2028'),
           unit: null,
           linkUrl: '/ppdb',
           buttonText: 'DAFTAR SEKARANG',
           isActive: true,
         },
         {
-          title: 'PPDB Ponpes 2027/2028 Telah Dibuka',
-          imageUrl: flyer('Flyer PPDB Ponpes 2027/2028'),
+          title: 'SPMB Ponpes 2027/2028 Telah Dibuka',
+          imageUrl: flyer('Flyer SPMB Ponpes 2027/2028'),
           unit: 'PONPES',
           linkUrl: '/ppdb?unit=PONPES',
           buttonText: 'DAFTAR PONPES',
           isActive: true,
         },
         {
-          title: 'PPDB SMP 2027/2028 Telah Dibuka',
-          imageUrl: flyer('Flyer PPDB SMP 2027/2028'),
+          title: 'SPMB SMP 2027/2028 Telah Dibuka',
+          imageUrl: flyer('Flyer SPMB SMP 2027/2028'),
           unit: 'SMP',
           linkUrl: '/ppdb?unit=SMP',
           buttonText: 'DAFTAR SMP',
           isActive: true,
         },
         {
-          title: 'PPDB SMK 2027/2028 Telah Dibuka',
-          imageUrl: flyer('Flyer PPDB SMK 2027/2028'),
+          title: 'SPMB SMK 2027/2028 Telah Dibuka',
+          imageUrl: flyer('Flyer SPMB SMK 2027/2028'),
           unit: 'SMK',
           linkUrl: '/ppdb?unit=SMK',
           buttonText: 'DAFTAR SMK',
@@ -518,7 +518,7 @@ async function main() {
     });
   }
 
-  // ---------- PENDAFTARAN PPDB (dummy untuk demo CMS List PPDB) ----------
+  // ---------- PENDAFTARAN SPMB (dummy untuk demo CMS List SPMB) ----------
   const regCount = await prisma.ppdbRegistration.count();
   if (regCount === 0) {
     const activePeriod = await prisma.spmbPeriod.findFirst({ where: { isActive: true } });
@@ -539,7 +539,7 @@ async function main() {
       const [fullName, gender, prevSchool, parentName] = regNames[i];
       await prisma.ppdbRegistration.create({
         data: {
-          regCode: `PPDB-2026-${String(1000 + i * 137).slice(0, 4)}${String.fromCharCode(65 + i)}`,
+          regCode: `SPMB-2026-${String(1000 + i * 137).slice(0, 4)}${String.fromCharCode(65 + i)}`,
           fullName,
           gender,
           unit: unitCycle[i],
@@ -558,7 +558,7 @@ async function main() {
         },
       });
     }
-    console.log(`✅ ${regNames.length} pendaftaran PPDB dummy dibuat.`);
+    console.log(`✅ ${regNames.length} pendaftaran SPMB dummy dibuat.`);
   }
 
   console.log('✅ Seeding selesai.');

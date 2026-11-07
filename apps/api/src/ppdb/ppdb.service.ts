@@ -29,10 +29,10 @@ export class PpdbService {
     if (!/^[0-9+\-() ]{8,20}$/.test(dto.parentPhone)) {
       throw new BadRequestException('Nomor WhatsApp/telepon tidak valid.');
     }
-    // Kode unik: PPDB-<tahun>-<6 karakter>, coba beberapa kali bila tabrakan
+    // Kode unik: SPMB-<tahun>-<6 karakter>, coba beberapa kali bila tabrakan
     let regCode = '';
     for (let i = 0; i < 5; i++) {
-      const candidate = `PPDB-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      const candidate = `SPMB-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
       const clash = await this.prisma.ppdbRegistration.findUnique({ where: { regCode: candidate } });
       if (!clash) {
         regCode = candidate;

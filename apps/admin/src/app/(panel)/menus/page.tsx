@@ -27,7 +27,7 @@ const QUICK_LINKS = [
   { label: "Agenda", url: "/agenda" },
   { label: "Prestasi", url: "/prestasi" },
   { label: "Galeri", url: "/galeri" },
-  { label: "PPDB", url: "/ppdb" },
+  { label: "SPMB", url: "/ppdb" },
   { label: "Kontak", url: "/kontak" },
 ];
 

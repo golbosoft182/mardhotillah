@@ -19,7 +19,7 @@ export default function NotFound() {
           href="/ppdb"
           className="rounded-full bg-gold-400 px-6 py-3 font-display font-semibold text-brand-800 transition hover:bg-sun-400"
         >
-          Info PPDB
+          Info SPMB
         </Link>
       </div>
     </div>

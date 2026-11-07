@@ -37,8 +37,8 @@ export function EmptyState({ title, hint }: { title: string; hint?: string }) {
 
 export function CtaBand({
   title = "Siap menjadi bagian dari keluarga Mardhotillah?",
-  description = "Daftarkan putra-putri Anda melalui PPDB online atau hubungi kami untuk informasi lebih lanjut.",
-  primaryLabel = "DAFTAR PPDB",
+  description = "Daftarkan putra-putri Anda melalui SPMB online atau hubungi kami untuk informasi lebih lanjut.",
+  primaryLabel = "DAFTAR SPMB",
   primaryHref = "/ppdb",
   secondaryLabel = "HUBUNGI KAMI",
   secondaryHref = "/kontak",

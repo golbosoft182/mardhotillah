@@ -63,7 +63,7 @@ export async function Footer() {
               <li><Link href="/agenda" className="transition hover:text-gold-400">Agenda</Link></li>
               <li><Link href="/prestasi" className="transition hover:text-gold-400">Prestasi</Link></li>
               <li><Link href="/fasilitas" className="transition hover:text-gold-400">Fasilitas</Link></li>
-              <li><Link href="/ppdb" className="transition hover:text-gold-400">PPDB</Link></li>
+              <li><Link href="/ppdb" className="transition hover:text-gold-400">SPMB</Link></li>
             </ul>
           </nav>
 

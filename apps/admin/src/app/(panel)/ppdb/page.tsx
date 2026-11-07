@@ -121,8 +121,8 @@ export default function PpdbPage() {
   if (!activePeriod) {
     return (
       <>
-        <PageHeader title="PPDB" description="Kelola konten halaman PPDB." />
-        <AdminEmptyState title="Belum ada periode PPDB" hint="Jalankan ulang seed atau buat periode melalui API admin." />
+        <PageHeader title="SPMB" description="Kelola konten halaman SPMB." />
+        <AdminEmptyState title="Belum ada periode SPMB" hint="Jalankan ulang seed atau buat periode melalui API admin." />
       </>
     );
   }
@@ -131,7 +131,7 @@ export default function PpdbPage() {
 
   return (
     <>
-      <PageHeader title="PPDB" description="Kelola konten halaman PPDB: periode, bagian, dan FAQ." />
+      <PageHeader title="SPMB" description="Kelola konten halaman SPMB: periode, bagian, dan FAQ." />
 
       {/* Periode */}
       <AdminCard className="mb-6">
@@ -196,7 +196,7 @@ export default function PpdbPage() {
       {/* FAQ */}
       <AdminCard className="mt-6">
         <h2 className="mb-4 flex items-center gap-2 font-display font-bold text-ink">
-          <HelpCircle className="h-5 w-5 text-brand-500" aria-hidden /> FAQ PPDB
+          <HelpCircle className="h-5 w-5 text-brand-500" aria-hidden /> FAQ SPMB
         </h2>
         <ul className="mb-5 space-y-3">
           {faqs.map((f) => (

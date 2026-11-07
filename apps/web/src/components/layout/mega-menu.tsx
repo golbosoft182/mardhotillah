@@ -57,7 +57,7 @@ export const FALLBACK_NAV: NavNode[] = [
   },
   { label: "Prestasi", url: "/prestasi" },
   { label: "Fasilitas", url: "/fasilitas" },
-  { label: "PPDB", url: "/ppdb" },
+  { label: "SPMB", url: "/ppdb" },
   { label: "Kontak", url: "/kontak" },
 ];
 
@@ -175,12 +175,12 @@ export function MegaMenu({ nav, siteName }: { nav: NavNode[]; siteName: string }
                             ))}
                           </div>
                         </div>
-                        {/* Kartu promo PPDB */}
+                        {/* Kartu promo SPMB */}
                         <div className="pattern-islamic m-2 flex flex-col justify-between rounded-xl bg-brand-600 p-4">
                           <div>
                             <Sparkles className="mb-2 h-5 w-5 text-gold-400" aria-hidden />
                             <p className="font-display text-sm font-bold leading-snug text-white">
-                              PPDB 2027/2028 telah dibuka
+                              SPMB 2027/2028 telah dibuka
                             </p>
                             <p className="mt-1 text-xs text-white/70">Daftarkan putra-putri Anda sekarang.</p>
                           </div>
@@ -189,7 +189,7 @@ export function MegaMenu({ nav, siteName }: { nav: NavNode[]; siteName: string }
                             onClick={() => setOpenDesktop(null)}
                             className="mt-3 inline-flex items-center justify-center rounded-full bg-gold-400 px-3.5 py-2 text-xs font-display font-bold text-brand-800 transition hover:bg-sun-400"
                           >
-                            INFO PPDB
+                            INFO SPMB
                           </Link>
                         </div>
                       </div>
@@ -303,7 +303,7 @@ export function MegaMenu({ nav, siteName }: { nav: NavNode[]; siteName: string }
                 onClick={() => setMobileOpen(false)}
                 className="flex w-full items-center justify-center rounded-full bg-gold-400 px-6 py-3 font-display font-semibold text-brand-800 shadow-card transition hover:bg-sun-400"
               >
-                DAFTAR PPDB
+                DAFTAR SPMB
               </Link>
             </div>
           </div>

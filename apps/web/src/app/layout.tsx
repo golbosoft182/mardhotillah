@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Popup PPDB aktif (bisa lebih dari satu: per jenjang Ponpes/SMP/SMK + umum) — tampil di semua halaman
+  // Popup SPMB aktif (bisa lebih dari satu: per jenjang Ponpes/SMP/SMK + umum) — tampil di semua halaman
   const popups =
     (await apiServer<PopupData[]>("/popup/actives")) ??
     ([] as PopupData[]);

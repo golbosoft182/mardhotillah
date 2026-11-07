@@ -69,17 +69,17 @@ const DUMMY_HERO_SLIDES: HeroSlide[] = [
     description:
       "Pendidikan terpadu Mardhotillah menghadirkan lingkungan pendidikan yang mengintegrasikan nilai keislaman, ilmu pengetahuan, karakter, keterampilan dan pengembangan potensi peserta didik.",
     image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80",
-    secondaryButton: "DAFTAR PPDB",
+    secondaryButton: "DAFTAR SPMB",
     secondaryLink: "/ppdb",
   },
   {
-    eyebrow: "PPDB 2027/2028 Telah Dibuka",
+    eyebrow: "SPMB 2027/2028 Telah Dibuka",
     title: "Wujudkan Masa Depan Cerah Putra-Putri Anda",
     description: "Pendaftaran peserta didik baru Ponpes, SMP, dan SMK Mardhotillah gelombang 1 telah resmi dibuka. Kuota terbatas.",
     image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1920&q=80",
     primaryButton: "DAFTAR SEKARANG",
     primaryLink: "/ppdb",
-    secondaryButton: "INFO PPDB",
+    secondaryButton: "INFO SPMB",
     secondaryLink: "/ppdb",
   },
   {
@@ -96,8 +96,8 @@ const DUMMY_HERO_SLIDES: HeroSlide[] = [
 
 const DUMMY_CTA = {
   heading: "Siap menjadi bagian dari keluarga Mardhotillah?",
-  description: "Daftarkan putra-putri Anda melalui PPDB online atau hubungi kami untuk informasi lebih lanjut.",
-  primaryButton: "DAFTAR PPDB",
+  description: "Daftarkan putra-putri Anda melalui SPMB online atau hubungi kami untuk informasi lebih lanjut.",
+  primaryButton: "DAFTAR SPMB",
   primaryLink: "/ppdb",
   secondaryButton: "HUBUNGI KAMI",
   secondaryLink: "/kontak",
@@ -190,7 +190,7 @@ export default async function HomePage() {
         <HeroSlider
           slides={slides}
           fallbackPrimary={{ label: "JELAJAHI PENDIDIKAN", href: "#pendidikan" }}
-          fallbackSecondary={{ label: "DAFTAR PPDB", href: "/ppdb" }}
+          fallbackSecondary={{ label: "DAFTAR SPMB", href: "/ppdb" }}
         />
       </section>
 
@@ -388,7 +388,7 @@ export default async function HomePage() {
         </Section>
       ) : null}
 
-      {/* 12. PPDB CTA — dari CMS section "spmb_cta" */}
+      {/* 12. SPMB CTA — dari CMS section "spmb_cta" */}
       <Section className="bg-cream">
         <div className="pattern-islamic relative overflow-hidden rounded-3xl bg-brand-700 px-6 py-12 text-center shadow-lift sm:px-12 sm:py-16">
           <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-gold-400/15 blur-2xl" aria-hidden />
@@ -400,7 +400,7 @@ export default async function HomePage() {
               href={str(cta.primaryLink, "/ppdb")}
               className="inline-flex items-center justify-center rounded-full bg-gold-400 px-7 py-3.5 font-display font-semibold text-brand-800 shadow-card transition hover:bg-sun-400 hover:shadow-lift"
             >
-              {str(cta.primaryButton, "DAFTAR PPDB")}
+              {str(cta.primaryButton, "DAFTAR SPMB")}
             </Link>
             <Link
               href={str(cta.secondaryLink, "/kontak")}

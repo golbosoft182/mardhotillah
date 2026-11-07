@@ -28,7 +28,7 @@ async function bootstrap() {
         '',
         '## Ringkasan',
         '- **Autentikasi**: JWT Bearer. Login via `POST /api/auth/login`, lalu klik tombol **Authorize** di kanan atas dan tempel token (tanpa kata "Bearer").',
-        '- **RBAC 4 role**: `SUPER_ADMIN` (semua akses), `ADMIN` (semua konten + user + SEO + menu + PPDB), `EDITOR` (buat/ubah, tidak bisa hapus), `OSIS` (hanya artikel sekolah miliknya, status wajib DRAFT/REVIEW).',
+        '- **RBAC 4 role**: `SUPER_ADMIN` (semua akses), `ADMIN` (semua konten + user + SEO + menu + SPMB), `EDITOR` (buat/ubah, tidak bisa hapus), `OSIS` (hanya artikel sekolah miliknya, status wajib DRAFT/REVIEW).',
         '- **Unit konten**: `YAYASAN`, `PONPES`, `SMP`, `SMK` — hampir semua resource ber-filter `?unit=`.',
         '- **Pagination**: semua endpoint list mendukung `?page=`, `?limit=`, `?q=` (pencarian), `?status=`, `?unit=`.',
         '',
@@ -37,7 +37,7 @@ async function bootstrap() {
         '',
         '## Konten beranda & popup',
         '- Section beranda: `GET /api/home-sections` (publik) · `PUT /api/home-sections/:key` (admin) — key: `ecosystem`, `benefits`, `activities`, `spmb_cta`.',
-        '- Popup PPDB: `GET /api/popup/active` (publik) · CRUD `/api/popup` (admin) — hanya satu popup aktif.',
+        '- Popup SPMB: `GET /api/popup/active` (publik) · CRUD `/api/popup` (admin) — hanya satu popup aktif.',
       ].join('\n'),
     )
     .setVersion('1.1.0')
@@ -56,9 +56,9 @@ async function bootstrap() {
     .addTag('teachers', 'Guru & tendik')
     .addTag('facilities', 'Fasilitas')
     .addTag('categories', 'Kategori publikasi')
-    .addTag('ppdb', 'PPDB: periode, konten halaman, FAQ')
+    .addTag('ppdb', 'SPMB: periode, konten halaman, FAQ')
     .addTag('home-sections', 'Section konten beranda (dinamis)')
-    .addTag('popup', 'Popup flyer PPDB tampil di semua halaman')
+    .addTag('popup', 'Popup flyer SPMB tampil di semua halaman')
     .addTag('menus', 'Menu navigasi header/footer')
     .addTag('seo', 'Metadata SEO per halaman')
     .addTag('settings', 'Pengaturan situs (kontak, hero, pengumuman, dll.)')

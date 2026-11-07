@@ -153,7 +153,7 @@ export default function DashboardPage() {
             { label: "Kelola pengguna", ok: can(user, "canManageUsers") },
             { label: "Pengaturan situs & SEO", ok: can(user, "canManageSettings") },
             { label: "Menu navigasi", ok: can(user, "canManageMenus") },
-            { label: "Konten PPDB", ok: can(user, "canManagePpdb") },
+            { label: "Konten SPMB", ok: can(user, "canManagePpdb") },
           ].map(({ label, ok }) => (
             <div key={label} className="flex items-center gap-2">
               <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${ok ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
