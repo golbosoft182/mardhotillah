@@ -26,6 +26,8 @@ export interface CrudConfig {
   slugFrom?: 'title' | 'name';
   /** field tanggal yang perlu dikonversi dari string ISO ke Date */
   dateFields?: string[];
+  /** field opsional yang string kosong ("") dari form harus disimpan sebagai null */
+  emptyToNull?: string[];
   /** relasi prisma yang disertakan pada list & detail */
   include?: Record<string, unknown>;
 }
@@ -115,6 +117,11 @@ export function makeCrudService(cfg: CrudConfig) {
       for (const f of cfg.fields) {
         if (dto[f] !== undefined) data[f] = dto[f];
       }
+      // Form web mengirim "" untuk pilihan yang dikosongkan (mis. unit global).
+      // Kolom enum/relasi opsional menolak string kosong — simpan sebagai null.
+      for (const f of cfg.emptyToNull ?? []) {
+        if (data[f] === '') data[f] = null;
+      }
       return data;
     }
 
@@ -124,7 +131,7 @@ export function makeCrudService(cfg: CrudConfig) {
         data.slug = await this.uniqueSlug(slugify(String(data[cfg.slugFrom] ?? '')));
       }
       for (const f of cfg.dateFields ?? []) {
-        if (typeof data[f] === 'string') data[f] = new Date(data[f]);
+        if (typeof data[f] === 'string') data[f] = data[f] ? new Date(data[f]) : null;
       }
       if (data.status === 'PUBLISHED' && cfg.fields.includes('publishedAt') && !data.publishedAt) {
         data.publishedAt = new Date();
@@ -143,12 +150,18 @@ export function makeCrudService(cfg: CrudConfig) {
         if (clash && clash.id !== id) data.slug = await this.uniqueSlug(data.slug);
       }
       for (const f of cfg.dateFields ?? []) {
-        if (typeof data[f] === 'string') data[f] = new Date(data[f]);
+        if (typeof data[f] === 'string') data[f] = data[f] ? new Date(data[f]) : null;
       }
       if (data.status === 'PUBLISHED' && cfg.fields.includes('publishedAt') && !current.publishedAt) {
         data.publishedAt = new Date();
       }
       return this.delegate.update({ where: { id }, data });
+    }
+
+    async remove(id: string) {
+      await this.findById(id);
+      await this.delegate.delete({ where: { id } });
+      return { success: true };
     }
   }
   return CrudService;

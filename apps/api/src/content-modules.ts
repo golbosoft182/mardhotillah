@@ -34,6 +34,7 @@ export const PagesModule = makeCrudModule('pages', 'pages', {
   includeGlobal: true,
   slugFrom: 'title',
   dateFields: ['publishedAt'],
+  emptyToNull: ['unit', 'parentId', 'authorId'],
 });
 
 export const EventsModule = makeCrudModule('events', 'events', {
@@ -80,6 +81,7 @@ export const ProgramsModule = makeCrudModule('programs', 'programs', {
   publicStatusFilter: true,
   includeGlobal: true,
   slugFrom: 'name',
+  emptyToNull: ['unit'],
 });
 
 export const ExtracurricularsModule = makeCrudModule('extracurriculars', 'extracurriculars', {
@@ -103,6 +105,7 @@ export const GalleriesModule = makeCrudModule('galleries', 'galleries', {
   includeGlobal: true,
   slugFrom: 'title',
   dateFields: ['publishedAt'],
+  emptyToNull: ['unit'],
   include: { items: { orderBy: { order: 'asc' } } },
 } as CrudConfig);
 
