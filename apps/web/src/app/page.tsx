@@ -30,6 +30,7 @@ import type {
   Settings,
 } from "@/lib/api";
 import { resolveImageUrl } from "@/lib/api";
+import { mapEmbedSrc } from "@/lib/maps";
 
 export const revalidate = 60;
 
@@ -157,6 +158,7 @@ export default async function HomePage() {
   ]);
 
   const gallery = galleries?.items?.[0] ?? null;
+  const mapSrc = mapEmbedSrc(settings?.maps_embed);
 
   // Hero dari CMS (Pengaturan) dengan fallback ke teks default
   const heroTitle = settings?.hero_title || "Membangun Generasi Qur'ani, Berilmu dan Berkarakter";
@@ -442,12 +444,14 @@ export default async function HomePage() {
             </dl>
           </div>
           <div className="min-h-[300px] overflow-hidden rounded-2xl shadow-card">
-            {settings?.maps_embed ? (
+            {mapSrc ? (
               <iframe
-                src={settings.maps_embed}
+                src={mapSrc}
                 title="Peta lokasi Yayasan Mardhotillah"
                 className="h-full min-h-[300px] w-full border-0"
                 loading="lazy"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
               />
             ) : (
               <div className="pattern-islamic flex h-full min-h-[300px] flex-col items-center justify-center gap-2 bg-brand-50 text-center">

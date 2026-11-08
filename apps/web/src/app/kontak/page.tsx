@@ -1,12 +1,14 @@
 import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
 import { PageHero, Section, CtaBand } from "@/components/ui/section";
 import { apiServer, type Settings } from "@/lib/api";
+import { mapEmbedSrc } from "@/lib/maps";
 
 export const revalidate = 300;
 export const metadata = { title: "Kontak", description: "Hubungi Yayasan Mardhotillah." };
 
 export default async function KontakPage() {
   const settings = await apiServer<Settings>("/settings");
+  const mapSrc = mapEmbedSrc(settings?.maps_embed);
 
   const rows = [
     { icon: MapPin, label: "Alamat", value: settings?.address ?? "[Alamat Lengkap Yayasan]" },
@@ -38,8 +40,15 @@ export default async function KontakPage() {
             ))}
           </div>
           <div className="min-h-[320px] overflow-hidden rounded-2xl shadow-card">
-            {settings?.maps_embed ? (
-              <iframe src={settings.maps_embed} title="Peta lokasi" className="h-full min-h-[320px] w-full border-0" loading="lazy" />
+            {mapSrc ? (
+              <iframe
+                src={mapSrc}
+                title="Peta lokasi"
+                className="h-full min-h-[320px] w-full border-0"
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
             ) : (
               <div className="pattern-islamic flex h-full min-h-[320px] flex-col items-center justify-center gap-2 bg-brand-50 text-center">
                 <MapPin className="h-8 w-8 text-brand-300" aria-hidden />

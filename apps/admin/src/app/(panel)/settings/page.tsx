@@ -89,8 +89,17 @@ export default function SettingsPage() {
               <Field label="Email">
                 <TextInput type="email" value={form.email ?? ""} onChange={(e) => set("email", e.target.value)} />
               </Field>
-              <Field label="Google Maps Embed URL" hint="Tempel URL embed dari Google Maps (opsional)">
-                <TextInput value={form.maps_embed ?? ""} onChange={(e) => set("maps_embed", e.target.value)} />
+              <Field
+                label="Google Maps Embed"
+                hint="Tempel kode embed HTML lengkap dari Google Maps (Bagikan → Sematkan peta) atau URL-nya saja. Kosongkan untuk menyembunyikan peta."
+              >
+                <TextArea
+                  value={form.maps_embed ?? ""}
+                  onChange={(e) => set("maps_embed", e.target.value)}
+                  className="font-mono text-xs"
+                  rows={6}
+                  placeholder={'<iframe src="https://www.google.com/maps/embed?pb=..." ...></iframe>'}
+                />
               </Field>
             </AdminCard>
 
