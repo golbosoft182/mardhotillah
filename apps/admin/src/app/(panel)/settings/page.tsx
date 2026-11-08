@@ -120,6 +120,28 @@ export default function SettingsPage() {
             </AdminCard>
 
             <AdminCard className="space-y-4">
+              <h2 className="font-display font-bold text-ink">Notifikasi WhatsApp</h2>
+              <Field
+                label="Nomor WhatsApp Admin"
+                hint="Nomor yang menerima notifikasi setiap pendaftaran SPMB baru. Pisahkan beberapa nomor dengan koma atau baris baru. Contoh: 081234567890, 081298765432"
+              >
+                <TextArea
+                  value={form.whatsapp_admin_numbers ?? ""}
+                  onChange={(e) => set("whatsapp_admin_numbers", e.target.value)}
+                  className="font-mono text-xs"
+                  rows={3}
+                  placeholder="081234567890"
+                />
+              </Field>
+              <p className="text-xs leading-relaxed text-ink-soft">
+                Setiap pendaftaran SPMB mengirim WhatsApp ke nomor admin di atas dan ke nomor WhatsApp orang tua/wali
+                yang diisi pendaftar. Integrasi memakai gateway Gontak — kunci API dan nomor pengirim diatur di server
+                (variabel <code className="rounded bg-brand-50 px-1">GONTAK_SECRET</code> dan{" "}
+                <code className="rounded bg-brand-50 px-1">GONTAK_SENDER</code>).
+              </p>
+            </AdminCard>
+
+            <AdminCard className="space-y-4">
               <h2 className="font-display font-bold text-ink">Media Sosial</h2>
               <Field label="Facebook"><TextInput value={form.facebook ?? ""} onChange={(e) => set("facebook", e.target.value)} /></Field>
               <Field label="Instagram"><TextInput value={form.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} /></Field>

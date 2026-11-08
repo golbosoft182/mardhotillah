@@ -382,6 +382,7 @@ async function main() {
     whatsapp: '[Nomor WhatsApp]',
     email: '[Email Resmi]',
     maps_embed: '',
+    whatsapp_admin_numbers: '',
     facebook: '#', instagram: '#', youtube: '#',
     announcement_text: 'SPMB 2027/2028 telah dibuka — Daftarkan putra-putri Anda sekarang',
     announcement_link: '/ppdb',

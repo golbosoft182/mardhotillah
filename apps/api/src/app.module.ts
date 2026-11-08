@@ -31,6 +31,7 @@ import { HomeSectionsModule } from './home-sections/home-sections.module';
 import { PopupModule } from './popup/popup.module';
 import { UnitGateMiddleware } from './common/middleware/unit-gate.middleware';
 import { HealthModule } from './health/health.module';
+import { WhatsappModule } from './whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { HealthModule } from './health/health.module';
     HomeSectionsModule,
     PopupModule,
     HealthModule,
+    WhatsappModule,
   ],
 })
 export class AppModule implements NestModule {

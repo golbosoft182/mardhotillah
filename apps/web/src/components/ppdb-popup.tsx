@@ -78,7 +78,7 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
       onClick={() => setOpen(false)}
     >
       <div
-        className="popup-width relative overflow-hidden rounded-2xl bg-white shadow-lift"
+        className="popup-width relative flex max-h-[92vh] flex-col overflow-hidden rounded-2xl bg-white shadow-lift"
         onClick={(e) => e.stopPropagation()}
         style={
           {
@@ -105,7 +105,7 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
           <div
             role="tablist"
             aria-label="Pilih jenjang SPMB"
-            className="grid grid-flow-col auto-cols-fr border-b border-brand-100 bg-white"
+            className="grid shrink-0 grid-flow-col auto-cols-fr border-b border-brand-100 bg-white"
           >
             {tabs.map((t) => {
               const selected = tabKey(current) === t.key;
@@ -131,20 +131,24 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
         <Link
           href={current.linkUrl || "/ppdb"}
           onClick={() => setOpen(false)}
-          className="group block"
+          className="group flex min-h-0 flex-col"
           aria-label={`${current.title} — buka halaman SPMB`}
         >
-          <div className="relative aspect-[4/5] w-full bg-brand-100">
+          {/* Flyer ditampilkan utuh (object-contain) dan dibatasi tinggi layar,
+              supaya bagian bawah gambar tidak pernah terpotong. */}
+          <div className="w-full overflow-hidden bg-brand-100">
             <Image
               key={current.id}
               src={current.imageUrl}
               alt={current.title}
-              fill
+              width={1080}
+              height={1350}
               sizes="(max-width: 640px) 90vw, 440px"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              className="mx-auto block h-auto w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+              style={{ maxHeight: showTabs ? "calc(92vh - 9.5rem)" : "calc(92vh - 8rem)" }}
             />
           </div>
-          <div className="pattern-islamic flex items-center gap-3 bg-brand-700 px-4 py-3.5">
+          <div className="pattern-islamic flex shrink-0 items-center gap-3 bg-brand-700 px-4 py-3.5">
             <Megaphone className="h-5 w-5 shrink-0 text-gold-400" aria-hidden />
             <div className="min-w-0">
               <p className="truncate font-display text-sm font-bold text-white">{current.title}</p>

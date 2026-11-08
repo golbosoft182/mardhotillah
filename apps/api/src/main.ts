@@ -65,6 +65,7 @@ async function bootstrap() {
     .addTag('media', 'Media library (unggahan gambar)')
     .addTag('users', 'Manajemen pengguna CMS (SUPER_ADMIN/ADMIN)')
     .addTag('health', 'Health check')
+    .addTag('whatsapp', 'WhatsApp (Gontak): webhook & notifikasi SPMB')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 
 const VALID_UNITS = ['PONPES', 'SMP', 'SMK'];
 
 @Injectable()
 export class PpdbService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private whatsapp: WhatsappService,
+  ) {}
 
   // ================= Pendaftaran Online =================
 
@@ -42,7 +46,7 @@ export class PpdbService {
     if (!regCode) throw new BadRequestException('Gagal membuat kode pendaftaran, coba lagi.');
 
     const activePeriod = await this.prisma.spmbPeriod.findFirst({ where: { isActive: true } });
-    return this.prisma.ppdbRegistration.create({
+    const created = await this.prisma.ppdbRegistration.create({
       data: {
         regCode,
         fullName: dto.fullName.trim(),
@@ -60,6 +64,12 @@ export class PpdbService {
         periodId: activePeriod?.id ?? null,
       },
     });
+
+    // Notifikasi WhatsApp (admin + orang tua) — berjalan di latar belakang,
+    // kegagalan pengiriman tidak menggagalkan pendaftaran.
+    void this.whatsapp.notifyNewRegistration(created);
+
+    return created;
   }
 
   async listRegistrations(opts: {
