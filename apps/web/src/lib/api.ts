@@ -158,6 +158,7 @@ export interface MenuResponse {
 
 export interface Settings {
   site_name?: string;
+  site_subtitle?: string;
   site_tagline?: string;
   address?: string;
   phone?: string;

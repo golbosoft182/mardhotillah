@@ -61,6 +61,13 @@ export default function SettingsPage() {
               <Field label="Nama Situs">
                 <TextInput value={form.site_name ?? ""} onChange={(e) => set("site_name", e.target.value)} />
               </Field>
+              <Field label="Subjudul Nama Situs" hint="Baris kedua di bawah nama situs (header). Contoh: Ponpes · SMP · SMK">
+                <TextInput
+                  value={form.site_subtitle ?? ""}
+                  onChange={(e) => set("site_subtitle", e.target.value)}
+                  placeholder="Ponpes · SMP · SMK"
+                />
+              </Field>
               <Field label="Tagline">
                 <TextInput value={form.site_tagline ?? ""} onChange={(e) => set("site_tagline", e.target.value)} />
               </Field>

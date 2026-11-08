@@ -10,6 +10,9 @@ export async function Header() {
     apiServer<MenuResponse>("/menus", { location: "HEADER" }),
     apiServer<Settings>("/settings"),
   ]);
+  // Nama situs + subjudulnya diatur dari CMS → Pengaturan → Identitas Situs
+  const siteName = settings?.site_name ?? "Yayasan Mardhotillah";
+  const siteSubtitle = settings?.site_subtitle ?? "Ponpes · SMP · SMK";
   const fallback = (await import("./mega-menu")).FALLBACK_NAV;
   const nav: NavNode[] =
     menuRes && menuRes.items.length > 0
@@ -51,7 +54,7 @@ export async function Header() {
       )}
       <header className="sticky top-0 z-40 border-b border-brand-900/10 bg-white/90 backdrop-blur-md">
       <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[auto_1fr] items-center gap-3 px-4 sm:px-6 xl:h-18 xl:grid-cols-[1fr_auto_1fr] xl:px-10">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${settings?.site_name ?? "Yayasan Mardhotillah"} — Beranda`}>
+        <Link href="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${siteName} — Beranda`}>
           <Image
             src="/images/logos/yayasan.webp"
             alt="Logo Yayasan Mardhotillah"
@@ -61,12 +64,12 @@ export async function Header() {
             priority
           />
           <span className="leading-tight">
-            <span className="block whitespace-nowrap font-display text-base font-extrabold uppercase tracking-wide text-brand-700 sm:text-lg">Yayasan Mardhotillah</span>
-            <span className="hidden whitespace-nowrap text-xs font-medium text-ink-soft sm:text-sm md:block">Ponpes · SMP · SMK</span>
+            <span className="block whitespace-nowrap font-display text-base font-extrabold uppercase tracking-wide text-brand-700 sm:text-lg">{siteName}</span>
+            <span className="hidden whitespace-nowrap text-xs font-medium text-ink-soft sm:text-sm md:block">{siteSubtitle}</span>
           </span>
         </Link>
         <nav aria-label="Menu" className="hidden min-w-0 xl:block">
-          <MegaMenu nav={nav} siteName={settings?.site_name ?? "Yayasan Mardhotillah"} />
+          <MegaMenu nav={nav} siteName={siteName} />
         </nav>
         <div className="flex items-center gap-3 justify-self-end">
           <Link
@@ -76,7 +79,7 @@ export async function Header() {
             SPMB
           </Link>
           <span className="xl:hidden">
-            <MegaMenu nav={nav} siteName={settings?.site_name ?? "Yayasan Mardhotillah"} />
+            <MegaMenu nav={nav} siteName={siteName} />
           </span>
         </div>
       </div>

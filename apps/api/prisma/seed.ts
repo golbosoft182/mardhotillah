@@ -375,6 +375,7 @@ async function main() {
   // ---------- SETTINGS ----------
   const settings = {
     site_name: 'Yayasan Mardhotillah',
+    site_subtitle: 'Ponpes · SMP · SMK',
     site_tagline: 'Membangun Generasi Qur\'ani, Berilmu dan Berkarakter',
     address: '[Alamat Lengkap Yayasan]',
     phone: '[Nomor Telepon]',
