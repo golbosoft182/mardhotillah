@@ -5,26 +5,26 @@ export type GontakResult = { ok: boolean; status: number; message?: string };
 /**
  * Klien tipis untuk Gontak (https://gontak.com) — gateway WhatsApp.
  *
- * Endpoint: POST {GONTAK_API_URL} (default https://gontak.com/api/send)
+ * Endpoint: POST {GONTAK_API_URL} (default https://gontak.com/api/send/whatsapp)
  * Body: application/x-www-form-urlencoded
  *   secret  → API key dari dashboard Gontak (menu API Keys)
- *   sender  → nomor WhatsApp pengirim yang terhubung di Gontak (mis. 6281234567890)
+ *   sender  → opsional, nomor WhatsApp pengirim yang terhubung di Gontak
  *   number  → nomor tujuan
  *   message → isi pesan teks
  *
- * Bila GONTAK_SECRET / GONTAK_SENDER belum diisi, pengiriman dilewati (tidak
- * menggagalkan proses pendaftaran) dan hanya dicatat di log.
+ * Bila GONTAK_SECRET belum diisi, pengiriman dilewati (tidak menggagalkan
+ * proses pendaftaran) dan hanya dicatat di log.
  */
 @Injectable()
 export class GontakService {
   private readonly logger = new Logger('Gontak');
-  private readonly apiUrl = process.env.GONTAK_API_URL?.trim() || 'https://gontak.com/api/send';
+  private readonly apiUrl = process.env.GONTAK_API_URL?.trim() || 'https://gontak.com/api/send/whatsapp';
   private readonly secret = process.env.GONTAK_SECRET?.trim() ?? '';
   private readonly sender = process.env.GONTAK_SENDER?.trim() ?? '';
 
-  /** Integrasi aktif bila kunci API dan nomor pengirim tersedia. */
+  /** Integrasi aktif bila kunci API tersedia. */
   get enabled(): boolean {
-    return Boolean(this.secret && this.sender);
+    return Boolean(this.secret);
   }
 
   /** 08xx / +62xx / 62xx → 62xxxxxxxxx (digit saja). */
@@ -45,16 +45,12 @@ export class GontakService {
       return { ok: false, status: 0, message: 'invalid-number' };
     }
     if (!this.enabled) {
-      this.logger.warn('GONTAK_SECRET/GONTAK_SENDER belum diisi — pesan WhatsApp dilewati.');
+      this.logger.warn('GONTAK_SECRET belum diisi — pesan WhatsApp dilewati.');
       return { ok: false, status: 0, message: 'not-configured' };
     }
 
-    const body = new URLSearchParams({
-      secret: this.secret,
-      sender: this.sender,
-      number,
-      message,
-    });
+    const body = new URLSearchParams({ secret: this.secret, number, message });
+    if (this.sender) body.set('sender', this.sender);
 
     try {
       const res = await fetch(this.apiUrl, {
