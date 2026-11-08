@@ -32,9 +32,9 @@ services:
       JWT_SECRET: ${JWT_SECRET:-dev_secret_change_me_min_32_characters_long!}
       API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:3102}
       # Gontak WhatsApp gateway — kosongkan untuk menonaktifkan notifikasi WA
-      GONTAK_API_URL: ${GONTAK_API_URL:-https://gontak.com/api/send}
+      GONTAK_API_URL: ${GONTAK_API_URL:-https://gontak.com/api/send/whatsapp}
       GONTAK_SECRET: ${GONTAK_SECRET:-}
-      GONTAK_SENDER: ${GONTAK_SENDER:-}
+      GONTAK_ACCOUNT: ${GONTAK_ACCOUNT:-}
       GONTAK_WEBHOOK_SECRET: ${GONTAK_WEBHOOK_SECRET:-}
       PORT: 3000
       NODE_ENV: production

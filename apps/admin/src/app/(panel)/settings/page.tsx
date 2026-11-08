@@ -135,9 +135,9 @@ export default function SettingsPage() {
               </Field>
               <p className="text-xs leading-relaxed text-ink-soft">
                 Setiap pendaftaran SPMB mengirim WhatsApp ke nomor admin di atas dan ke nomor WhatsApp orang tua/wali
-                yang diisi pendaftar. Integrasi memakai gateway Gontak — kunci API dan nomor pengirim diatur di server
+                yang diisi pendaftar. Integrasi memakai gateway Gontak — kunci API dan ID akun WhatsApp diatur di server
                 (variabel <code className="rounded bg-brand-50 px-1">GONTAK_SECRET</code> dan{" "}
-                <code className="rounded bg-brand-50 px-1">GONTAK_SENDER</code>).
+                <code className="rounded bg-brand-50 px-1">GONTAK_ACCOUNT</code>).
               </p>
             </AdminCard>
 

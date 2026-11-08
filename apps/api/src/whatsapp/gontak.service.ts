@@ -7,24 +7,25 @@ export type GontakResult = { ok: boolean; status: number; message?: string };
  *
  * Endpoint: POST {GONTAK_API_URL} (default https://gontak.com/api/send/whatsapp)
  * Body: application/x-www-form-urlencoded
- *   secret  → API key dari dashboard Gontak (menu API Keys)
- *   sender  → opsional, nomor WhatsApp pengirim yang terhubung di Gontak
- *   number  → nomor tujuan
- *   message → isi pesan teks
+ *   secret    → API key dari dashboard Gontak (Tools → API Keys), butuh izin "wa_send"
+ *   account   → ID akun WhatsApp di Gontak (WhatsApp → akun, lihat /api/get/wa.accounts)
+ *   recipient → nomor tujuan format E.164 (+62812...)
+ *   type      → "text"
+ *   message   → isi pesan teks
  *
- * Bila GONTAK_SECRET belum diisi, pengiriman dilewati (tidak menggagalkan
- * proses pendaftaran) dan hanya dicatat di log.
+ * Bila GONTAK_SECRET / GONTAK_ACCOUNT belum diisi, pengiriman dilewati (tidak
+ * menggagalkan proses pendaftaran) dan hanya dicatat di log.
  */
 @Injectable()
 export class GontakService {
   private readonly logger = new Logger('Gontak');
   private readonly apiUrl = process.env.GONTAK_API_URL?.trim() || 'https://gontak.com/api/send/whatsapp';
   private readonly secret = process.env.GONTAK_SECRET?.trim() ?? '';
-  private readonly sender = process.env.GONTAK_SENDER?.trim() ?? '';
+  private readonly account = (process.env.GONTAK_ACCOUNT ?? process.env.GONTAK_SENDER ?? '').trim();
 
-  /** Integrasi aktif bila kunci API tersedia. */
+  /** Integrasi aktif bila kunci API dan ID akun WhatsApp tersedia. */
   get enabled(): boolean {
-    return Boolean(this.secret);
+    return Boolean(this.secret && this.account);
   }
 
   /** 08xx / +62xx / 62xx → 62xxxxxxxxx (digit saja). */
@@ -45,12 +46,17 @@ export class GontakService {
       return { ok: false, status: 0, message: 'invalid-number' };
     }
     if (!this.enabled) {
-      this.logger.warn('GONTAK_SECRET belum diisi — pesan WhatsApp dilewati.');
+      this.logger.warn('GONTAK_SECRET/GONTAK_ACCOUNT belum diisi — pesan WhatsApp dilewati.');
       return { ok: false, status: 0, message: 'not-configured' };
     }
 
-    const body = new URLSearchParams({ secret: this.secret, number, message });
-    if (this.sender) body.set('sender', this.sender);
+    const body = new URLSearchParams({
+      secret: this.secret,
+      account: this.account,
+      recipient: `+${number}`,
+      type: 'text',
+      message,
+    });
 
     try {
       const res = await fetch(this.apiUrl, {
