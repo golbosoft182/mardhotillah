@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { X, Megaphone } from "lucide-react";
 import type { PopupData } from "@/lib/api";
@@ -21,12 +22,16 @@ function tabKey(popup: PopupData): string {
 }
 
 /**
- * Popup SPMB — tampil di semua halaman setiap kali halaman dimuat.
+ * Popup SPMB — tampil di semua halaman setiap kali halaman dimuat, kecuali
+ * di halaman SPMB sendiri (/ppdb) karena pengunjung sudah berada di sana.
  * Jika ada lebih dari satu popup aktif, pengunjung dapat memilih jenjang
  * (Yayasan/Ponpes/SMP/SMK) lewat tab di dalam popup.
  * Dikontrol dari CMS Admin → menu "Popup SPMB".
  */
 export function PpdbPopup({ popups }: { popups: PopupData[] }) {
+  const pathname = usePathname();
+  // Jangan tampilkan di halaman pendaftaran SPMB maupun halaman turunannya
+  const hidden = pathname === "/ppdb" || pathname.startsWith("/ppdb/");
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   // Tab aktif = pilihan pengunjung; null berarti pakai popup pertama yang tersedia
@@ -45,12 +50,13 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
   }, []);
 
   useEffect(() => {
-    if (current && mounted) {
+    if (current && mounted && !hidden) {
       // tampil setiap refresh — tanpa menyimpan state "sudah ditutup"
       const t = setTimeout(() => setOpen(true), 600);
       return () => clearTimeout(t);
     }
-  }, [current, mounted]);
+    setOpen(false);
+  }, [current, mounted, hidden]);
 
   useEffect(() => {
     if (!open) return;
@@ -65,7 +71,7 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
     };
   }, [open]);
 
-  if (!current || !open) return null;
+  if (hidden || !current || !open) return null;
 
   const showTabs = tabs.length > 1;
 
