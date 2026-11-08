@@ -136,7 +136,7 @@ export function PpdbPopup({ popups }: { popups: PopupData[] }) {
         >
           {/* Flyer ditampilkan utuh (object-contain) dan dibatasi tinggi layar,
               supaya bagian bawah gambar tidak pernah terpotong. */}
-          <div className="w-full overflow-hidden bg-brand-100">
+          <div className="flex w-full items-center justify-center overflow-hidden bg-white">
             <Image
               key={current.id}
               src={current.imageUrl}
