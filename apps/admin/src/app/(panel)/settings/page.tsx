@@ -16,7 +16,7 @@ export default function SettingsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await api<Record<string, unknown>>("/settings");
+        const data = await api<Record<string, unknown>>("/settings/admin");
         const map: Record<string, string> = {};
         for (const [k, v] of Object.entries(data)) {
           map[k] = typeof v === "string" ? v : JSON.stringify(v);

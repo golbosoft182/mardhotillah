@@ -13,6 +13,14 @@ export class SettingsController {
   @Public()
   @Get()
   async all() {
+    return this.settings.publicAll();
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('admin')
+  async allForAdmin() {
     return this.settings.all();
   }
 
