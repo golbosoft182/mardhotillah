@@ -27,7 +27,7 @@ export async function Header() {
     <>
       {/* Topbar: jam sistem + pemilih bahasa (ID/EN/AR) — di atas announcement */}
       <div className="bg-brand-900 text-white">
-        <div className="mx-auto flex h-9 w-full max-w-[1600px] items-center justify-between gap-3 px-4 sm:px-6 xl:px-10">
+        <div className="mx-auto flex h-9 w-full items-center justify-between gap-3 px-4 sm:px-6 xl:px-10">
           <p className="hidden shrink-0 text-[11px] text-white/60 lg:block">
             Selamat datang di website resmi Yayasan Mardhotillah
           </p>
@@ -53,7 +53,7 @@ export async function Header() {
         </div>
       )}
       <header className="sticky top-0 z-40 border-b border-brand-900/10 bg-white/90 backdrop-blur-md">
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[auto_1fr] items-center gap-3 px-4 sm:px-6 xl:h-18 xl:grid-cols-[1fr_auto_1fr] xl:px-10">
+      <div className="mx-auto grid w-full grid-cols-[auto_1fr] items-center gap-3 px-4 sm:px-6 xl:h-18 xl:grid-cols-[1fr_auto_1fr] xl:px-10">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${siteName} — Beranda`}>
           <Image
             src="/images/logos/yayasan.webp"
