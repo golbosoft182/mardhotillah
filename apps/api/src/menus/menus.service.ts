@@ -1,5 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+
+/** Satu simpul menu (rekursif) — dipakai untuk menyimpan pohon menu dari CMS. */
+export type MenuItemInput = {
+  label: string;
+  url: string;
+  order?: number;
+  children?: MenuItemInput[];
+};
 
 type MenuItemNode = {
   id: string;
@@ -29,15 +37,7 @@ export class MenusService {
     });
   }
 
-  async upsertByLocation(
-    location: 'HEADER' | 'FOOTER',
-    items: {
-      label: string;
-      url: string;
-      order?: number;
-      children?: { label: string; url: string; order?: number }[];
-    }[],
-  ) {
+  async upsertByLocation(location: 'HEADER' | 'FOOTER', items: MenuItemInput[]) {
     let menu = await this.prisma.menu.findFirst({ where: { location } });
     if (!menu) {
       menu = await this.prisma.menu.create({
@@ -45,28 +45,26 @@ export class MenusService {
       });
     }
     await this.prisma.menuItem.deleteMany({ where: { menuId: menu.id } });
+    await this.createItems(menu.id, items, null);
+    return this.findByLocation(location);
+  }
+
+  /** Simpan pohon menu secara rekursif — kedalaman tidak dibatasi. */
+  private async createItems(menuId: string, items: MenuItemInput[], parentId: string | null) {
     for (const [i, item] of items.entries()) {
-      const parent = await this.prisma.menuItem.create({
+      const created = await this.prisma.menuItem.create({
         data: {
-          menuId: menu.id,
+          menuId,
           label: item.label,
-          url: item.url,
+          url: item.url ?? '/',
           order: item.order ?? i + 1,
+          parentId,
         },
       });
-      for (const [j, child] of (item.children ?? []).entries()) {
-        await this.prisma.menuItem.create({
-          data: {
-            menuId: menu.id,
-            label: child.label,
-            url: child.url,
-            order: child.order ?? j + 1,
-            parentId: parent.id,
-          },
-        });
+      if (item.children?.length) {
+        await this.createItems(menuId, item.children, created.id);
       }
     }
-    return this.findByLocation(location);
   }
 
   private buildTree(items: { id: string; label: string; url: string; order: number; parentId: string | null }[]): MenuItemNode[] {

@@ -6,6 +6,7 @@ import { NewsCard } from "@/components/ui/cards";
 import { CtaBand, Section } from "@/components/ui/section";
 import { apiServer, resolveImageUrl, SITE_URL, type ListResponse, type Post } from "@/lib/api";
 import { POST_TYPE_LABELS, POST_TYPE_PATHS, formatDate, UNIT_SHORT } from "@/lib/site";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 export const revalidate = 60;
 
@@ -55,7 +56,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="pattern-islamic bg-brand-700 pb-12 pt-10">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-white/70">
             <a href="/" className="transition hover:text-gold-400">Beranda</a>
             <span aria-hidden>/</span>
@@ -76,7 +77,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
       </div>
 
       <Section>
-        <article className="mx-auto max-w-3xl">
+        <article className="mx-auto">
           {post.featuredImage && (
             <Image
               src={resolveImageUrl(post.featuredImage)!}
@@ -89,7 +90,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
           )}
           {post.excerpt && <p className="mb-6 text-lg leading-relaxed text-ink-soft">{post.excerpt}</p>}
           {post.content ? (
-            <div className="cms-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div className="cms-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
           ) : (
             <p className="text-ink-soft">[Konten artikel sedang diperbarui]</p>
           )}

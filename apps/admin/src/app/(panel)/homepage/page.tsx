@@ -19,9 +19,9 @@ interface ItemRow {
   [key: string]: unknown;
 }
 
-const SECTION_META: Record<string, { title: string; hint: string; itemType: "units" | "text" }> = {
+const SECTION_META: Record<string, { title: string; hint: string; itemType: "units" | "text" | "none" }> = {
   hero_slides: { title: "Hero Slider", hint: "Foto + caption beranda yang tampil bergantian (slider)", itemType: "units" },
-  ecosystem: { title: "Ekosistem Pendidikan", hint: "3 kartu satuan pendidikan di beranda", itemType: "units" },
+  dkv_showcase: { title: "Showcase Karya DKV", hint: "Kartu karya DKV terbaru di beranda (isi diambil dari menu Showcase Karya DKV)", itemType: "none" },
   benefits: { title: "Mengapa Mardhotillah?", hint: "6 keunggulan dengan ikon", itemType: "text" },
   spmb_cta: { title: "CTA SPMB", hint: "Bagian ajakan daftar di bawah beranda", itemType: "text" },
 };
@@ -150,7 +150,7 @@ export default function HomepageAdminPage() {
     <>
       <PageHeader
         title="Konten Beranda"
-        description="Kelola isi setiap section halaman depan — hero slider, kartu unit, keunggulan, dan CTA SPMB."
+        description="Kelola isi setiap section halaman depan — hero slider, showcase karya DKV, keunggulan, dan CTA SPMB."
       />
       <ErrorAlert message={error} />
       <SuccessAlert message={success} />
@@ -311,58 +311,73 @@ export default function HomepageAdminPage() {
                   </div>
                 )}
 
-                <div className="space-y-3">
-                  {items(key).map((item, idx) => (
-                    <div key={idx} className="rounded-xl bg-cream p-4 ring-1 ring-brand-900/5">
-                      <div className="mb-3 flex items-center justify-between">
-                        <p className="text-xs font-bold uppercase tracking-wider text-ink-soft">Item {idx + 1}</p>
-                        <button type="button" onClick={() => removeItem(key, idx)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-50" aria-label={`Hapus item ${idx + 1}`}>
-                          <Trash2 className="h-4 w-4" aria-hidden />
-                        </button>
-                      </div>
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {meta.itemType === "units" &&
-                          UNIT_FIELDS.map((f) => (
-                            <Field key={f} label={f === "href" ? "Link" : f === "image" ? "URL Gambar" : f}>
-                              <TextInput value={String(item[f] ?? "")} onChange={(e) => updateItem(key, idx, f, e.target.value)} />
-                            </Field>
-                          ))}
-                        {meta.itemType === "text" && (
-                          <>
-                            <Field label="Ikon">
-                              <select
-                                value={String(item.icon ?? "sparkles")}
-                                onChange={(e) => updateItem(key, idx, "icon", e.target.value)}
-                                className="w-full rounded-xl border border-brand-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
-                              >
-                                {ICON_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                              </select>
-                            </Field>
-                            <Field label="Judul"><TextInput value={String(item.title ?? "")} onChange={(e) => updateItem(key, idx, "title", e.target.value)} /></Field>
-                            <div className="sm:col-span-2">
-                              <Field label="Deskripsi"><TextArea className="!min-h-[60px]" value={String(item.description ?? "")} onChange={(e) => updateItem(key, idx, "description", e.target.value)} /></Field>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {key === "dkv_showcase" && (
+                  <div className="mb-5 grid gap-4 sm:grid-cols-2">
+                    <Field label="Teks Tombol">
+                      <TextInput value={String(get(key)!.data.buttonText ?? "")} onChange={(e) => updateHead(key, "buttonText", e.target.value)} />
+                    </Field>
+                    <Field label="Link Tombol">
+                      <TextInput value={String(get(key)!.data.buttonLink ?? "")} onChange={(e) => updateHead(key, "buttonLink", e.target.value)} />
+                    </Field>
+                  </div>
+                )}
 
-                <SecondaryButton
-                  type="button"
-                  className="mt-3"
-                  onClick={() =>
-                    addItem(
-                      key,
-                      meta.itemType === "units"
-                        ? { name: "Unit Baru", tagline: "", description: "", href: "/", image: "" }
-                        : { icon: "sparkles", title: "Keunggulan Baru", description: "" },
-                    )
-                  }
-                >
-                  <Plus className="h-4 w-4" aria-hidden /> Tambah Item
-                </SecondaryButton>
+                {meta.itemType !== "none" && (
+                  <>
+                    <div className="space-y-3">
+                      {items(key).map((item, idx) => (
+                        <div key={idx} className="rounded-xl bg-cream p-4 ring-1 ring-brand-900/5">
+                          <div className="mb-3 flex items-center justify-between">
+                            <p className="text-xs font-bold uppercase tracking-wider text-ink-soft">Item {idx + 1}</p>
+                            <button type="button" onClick={() => removeItem(key, idx)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-50" aria-label={`Hapus item ${idx + 1}`}>
+                              <Trash2 className="h-4 w-4" aria-hidden />
+                            </button>
+                          </div>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            {meta.itemType === "units" &&
+                              UNIT_FIELDS.map((f) => (
+                                <Field key={f} label={f === "href" ? "Link" : f === "image" ? "URL Gambar" : f}>
+                                  <TextInput value={String(item[f] ?? "")} onChange={(e) => updateItem(key, idx, f, e.target.value)} />
+                                </Field>
+                              ))}
+                            {meta.itemType === "text" && (
+                              <>
+                                <Field label="Ikon">
+                                  <select
+                                    value={String(item.icon ?? "sparkles")}
+                                    onChange={(e) => updateItem(key, idx, "icon", e.target.value)}
+                                    className="w-full rounded-xl border border-brand-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
+                                  >
+                                    {ICON_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                </Field>
+                                <Field label="Judul"><TextInput value={String(item.title ?? "")} onChange={(e) => updateItem(key, idx, "title", e.target.value)} /></Field>
+                                <div className="sm:col-span-2">
+                                  <Field label="Deskripsi"><TextArea className="!min-h-[60px]" value={String(item.description ?? "")} onChange={(e) => updateItem(key, idx, "description", e.target.value)} /></Field>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <SecondaryButton
+                      type="button"
+                      className="mt-3"
+                      onClick={() =>
+                        addItem(
+                          key,
+                          meta.itemType === "units"
+                            ? { name: "Unit Baru", tagline: "", description: "", href: "/", image: "" }
+                            : { icon: "sparkles", title: "Keunggulan Baru", description: "" },
+                        )
+                      }
+                    >
+                      <Plus className="h-4 w-4" aria-hidden /> Tambah Item
+                    </SecondaryButton>
+                  </>
+                )}
               </>
             )}
           </CollapsibleSection>

@@ -6,16 +6,26 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, FolderOpen, CalendarDays, Trophy, LayoutGrid,
   ImageIcon, Users, Star, Wrench, FileDown, ListTree, Search, Settings as SettingsIcon,
-  LogOut, Menu as MenuIcon, Home, Loader2, ClipboardList,
+  LogOut, Menu as MenuIcon, Home, Loader2, ClipboardList, Palette, BookOpen, ListChecks, Briefcase, Handshake,
 } from "lucide-react";
-import { getSession, clearSession, can, type AdminUser } from "@/lib/auth";
+import { getSession, clearSession, can, api, type AdminUser } from "@/lib/auth";
 
-interface NavItem {
+export interface NavItem {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   visible: (u: AdminUser) => boolean;
 }
+
+export const MENU_ROLES = ["SUPER_ADMIN", "ADMIN", "EDITOR", "OSIS"] as const;
+export type MenuRole = (typeof MENU_ROLES)[number];
+
+export const ROLE_LABELS: Record<string, string> = {
+  SUPER_ADMIN: "Super Admin",
+  ADMIN: "Admin",
+  EDITOR: "Editor",
+  OSIS: "OSIS",
+};
 
 const NAV: { section: string; items: NavItem[] }[] = [
   {
@@ -25,9 +35,13 @@ const NAV: { section: string; items: NavItem[] }[] = [
       { href: "/posts", label: "Berita & Artikel", icon: FileText, visible: () => true },
       { href: "/pages", label: "Halaman", icon: FolderOpen, visible: (u) => u.role !== "OSIS" },
       { href: "/agenda", label: "Agenda", icon: CalendarDays, visible: (u) => u.role !== "OSIS" },
+      { href: "/program-kerja-kesiswaan", label: "Program Kerja Kesiswaan", icon: ListChecks, visible: (u) => u.role !== "OSIS" },
+      { href: "/bkk", label: "Bursa Kerja Khusus", icon: Briefcase, visible: (u) => u.role !== "OSIS" },
+      { href: "/mitra-industri", label: "Mitra Industri", icon: Handshake, visible: (u) => u.role !== "OSIS" },
       { href: "/prestasi", label: "Prestasi", icon: Trophy, visible: (u) => u.role !== "OSIS" },
-      { href: "/aktivitas", label: "Aktivitas Siswa & Santri", icon: ClipboardList, visible: (u) => u.role !== "OSIS" },
-      { href: "/galeri", label: "Galeri", icon: ImageIcon, visible: (u) => u.role !== "OSIS" },
+      { href: "/ekstrakulikuler", label: "Ekstrakulikuler", icon: ClipboardList, visible: (u) => u.role !== "OSIS" },
+      { href: "/karya-dkv", label: "Showcase Karya DKV", icon: Palette, visible: (u) => u.role !== "OSIS" },
+      { href: "/jurnal-dkv", label: "Jurnal DKV", icon: BookOpen, visible: (u) => u.role !== "OSIS" },
     ],
   },
   {
@@ -55,6 +69,19 @@ const NAV: { section: string; items: NavItem[] }[] = [
   },
 ];
 
+/** Katalog menu untuk pengaturan akses (RBAC). */
+export const MENU_CATALOG = NAV.map((group) => ({
+  section: group.section,
+  items: group.items.map((item) => ({ href: item.href, label: item.label })),
+}));
+
+/** Menu default sebuah peran (dipakai bila peran belum diatur pada RBAC). */
+export function defaultMenusForRole(role: MenuRole): string[] {
+  const fake = { id: "", name: "", email: "", role, unit: null } as AdminUser;
+  return NAV.flatMap((group) => group.items.filter((item) => item.visible(fake)).map((item) => item.href));
+}
+
+
 const ROLE_BADGE: Record<string, string> = {
   SUPER_ADMIN: "bg-gold-100 text-gold-500",
   ADMIN: "bg-brand-100 text-brand-700",
@@ -68,6 +95,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [checked, setChecked] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Menu yang diizinkan untuk peran pengguna (dari RBAC). null = belum diatur → pakai aturan default.
+  const [roleMenus, setRoleMenus] = useState<string[] | null>(null);
 
   useEffect(() => {
     const s = getSession();
@@ -77,7 +106,19 @@ export function Shell({ children }: { children: React.ReactNode }) {
     }
     setUser(s.user);
     setChecked(true);
+    api<{ menus?: string[] } | null>("/role-menus/me")
+      .then((r) => setRoleMenus(r && Array.isArray(r.menus) ? r.menus : null))
+      .catch(() => setRoleMenus(null));
   }, [router]);
+
+  /** Visibilitas menu: dashboard selalu tampil; Super Admin akses penuh. */
+  const isVisible = (item: NavItem): boolean => {
+    if (!user) return false;
+    if (item.href === "/dashboard" || user.role === "SUPER_ADMIN") return true;
+    if (!item.visible(user)) return false;
+    if (roleMenus === null) return true; // belum diatur → default
+    return roleMenus.includes(item.href);
+  };
 
   useEffect(() => setDrawerOpen(false), [pathname]);
 
@@ -102,7 +143,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Menu admin">
         {NAV.map((group) => {
-          const visibleItems = group.items.filter((i) => user && i.visible(user));
+          const visibleItems = group.items.filter(isVisible);
           if (!visibleItems.length) return null;
           return (
             <div key={group.section} className="mb-5">

@@ -1,18 +1,37 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Facebook, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react";
-import { apiServer, type Settings } from "@/lib/api";
+import { apiServer, type MenuResponse, type Settings } from "@/lib/api";
+
+/** Fallback kolom "Tautan" bila menu FOOTER belum diatur di CMS. */
+const FALLBACK_FOOTER_LINKS: { label: string; url: string }[] = [
+  { label: "Profil Yayasan", url: "/tentang/profil" },
+  { label: "Berita", url: "/berita" },
+  { label: "Agenda", url: "/agenda" },
+  { label: "Prestasi", url: "/prestasi" },
+  { label: "Fasilitas", url: "/fasilitas" },
+  { label: "Bursa Kerja Khusus", url: "/bkk" },
+  { label: "Mitra Industri", url: "/mitra-industri" },
+  { label: "SPMB", url: "/ppdb" },
+  { label: "Kontak", url: "/kontak" },
+];
 
 export async function Footer() {
-  const settings = await apiServer<Settings>("/settings");
+  const [settings, footerMenu] = await Promise.all([
+    apiServer<Settings>("/settings"),
+    apiServer<MenuResponse>("/menus", { location: "FOOTER" }),
+  ]);
   const name = settings?.site_name ?? "Yayasan Mardhotillah";
+  const footerLinks = footerMenu?.items?.length
+    ? footerMenu.items.map((i) => ({ label: i.label, url: i.url }))
+    : FALLBACK_FOOTER_LINKS;
 
   return (
     <footer className="pattern-islamic bg-brand-800 text-white/80">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-2 md:gap-10 lg:grid-cols-3">
           {/* Identitas */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="mb-4 flex items-center gap-2.5">
               <Image
                 src="/images/logos/yayasan.webp"
@@ -36,39 +55,28 @@ export async function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-gold-400 hover:text-brand-800"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition hover:bg-gold-400 hover:text-brand-800 sm:h-9 sm:w-9"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-5 w-5 sm:h-4 sm:w-4" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Satuan Pendidikan */}
-          <nav aria-label="Satuan pendidikan">
-            <h3 className="mb-4 font-display text-sm font-bold uppercase tracking-wider text-gold-400">Satuan Pendidikan</h3>
-            <ul className="space-y-2.5 text-sm">
-              <li><Link href="/ponpes" className="transition hover:text-gold-400">Pondok Pesantren Mardhotillah</Link></li>
-              <li><Link href="/smp" className="transition hover:text-gold-400">SMP Unggulan Mardhotillah</Link></li>
-              <li><Link href="/smk" className="transition hover:text-gold-400">SMK Mardhotillah Plus</Link></li>
-            </ul>
-          </nav>
-
           {/* Tautan */}
           <nav aria-label="Tautan cepat">
             <h3 className="mb-4 font-display text-sm font-bold uppercase tracking-wider text-gold-400">Tautan</h3>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="/tentang/profil" className="transition hover:text-gold-400">Profil Yayasan</Link></li>
-              <li><Link href="/berita" className="transition hover:text-gold-400">Berita</Link></li>
-              <li><Link href="/agenda" className="transition hover:text-gold-400">Agenda</Link></li>
-              <li><Link href="/prestasi" className="transition hover:text-gold-400">Prestasi</Link></li>
-              <li><Link href="/fasilitas" className="transition hover:text-gold-400">Fasilitas</Link></li>
-              <li><Link href="/ppdb" className="transition hover:text-gold-400">SPMB</Link></li>
+              {footerLinks.map((l) => (
+                <li key={`${l.url}-${l.label}`}>
+                  <Link href={l.url} className="transition hover:text-gold-400">{l.label}</Link>
+                </li>
+              ))}
             </ul>
           </nav>
 
           {/* Kontak */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h3 className="mb-4 font-display text-sm font-bold uppercase tracking-wider text-gold-400">Kontak</h3>
             <ul className="space-y-3 text-sm">
               <li className="flex gap-2.5">

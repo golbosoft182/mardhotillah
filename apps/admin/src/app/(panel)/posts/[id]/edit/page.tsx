@@ -16,11 +16,21 @@ interface ApiPost {
   content?: string;
   featuredImage?: string;
   status: string;
+  publishedAt?: string | null;
   seoTitle?: string;
   seoDescription?: string;
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
+}
+
+/** Ubah ISO string menjadi nilai input datetime-local (waktu lokal). */
+function toLocalInput(iso?: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
@@ -58,6 +68,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         content: post.content ?? "",
         featuredImage: post.featuredImage ?? "",
         status: post.status,
+        publishedAt: toLocalInput(post.publishedAt),
         seoTitle: post.seoTitle ?? "",
         seoDescription: post.seoDescription ?? "",
         ogTitle: post.ogTitle ?? "",

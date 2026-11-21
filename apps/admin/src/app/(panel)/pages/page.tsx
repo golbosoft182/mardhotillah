@@ -28,7 +28,7 @@ export default function PagesPage() {
         { key: "slug", label: "Slug", hint: "Kosongkan untuk otomatis" },
         { key: "unit", label: "Unit", type: "select", options: UNIT_OPTIONS },
         { key: "status", label: "Status", type: "select", options: STATUS_OPTIONS, render: (v) => <StatusBadge status={String(v ?? "DRAFT")} /> },
-        { key: "content", label: "Konten (HTML)", type: "textarea", hideInTable: true },
+        { key: "content", label: "Konten (HTML)", type: "html", hideInTable: true },
         { key: "seoTitle", label: "SEO Title", hideInTable: true, hint: "Opsional — untuk judul di Google" },
         { key: "seoDescription", label: "Meta Description", type: "textarea", hideInTable: true, hint: "Maks 160 karakter" },
         { key: "heroImage", label: "Gambar Hero (URL)", type: "image", hideInTable: true },

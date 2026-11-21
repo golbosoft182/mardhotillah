@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Plus, Pencil } from "lucide-react";
 import { api, can, getSession } from "@/lib/auth";
 import { PageHeader } from "@/components/shell";
+import { RoleMenuAccess } from "@/components/role-menu-access";
 import { RoleBadge } from "@/components/ui-extra";
 import {
   AdminCard, AdminEmptyState, ErrorAlert, Field, PrimaryButton,
@@ -145,6 +146,8 @@ export default function UsersPage() {
           <div className="p-6"><AdminEmptyState title="Belum ada pengguna" /></div>
         )}
       </AdminCard>
+
+      <RoleMenuAccess />
 
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">

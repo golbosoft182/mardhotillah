@@ -12,8 +12,8 @@ export class CreatePostDto {
   @IsEnum(['YAYASAN', 'PONPES', 'SMP', 'SMK'])
   unit!: 'YAYASAN' | 'PONPES' | 'SMP' | 'SMK';
 
-  @IsEnum(['BERITA', 'ARTIKEL', 'OPINI', 'POJOK_SISWA'])
-  type!: 'BERITA' | 'ARTIKEL' | 'OPINI' | 'POJOK_SISWA';
+  @IsEnum(['BERITA', 'ARTIKEL', 'OPINI', 'POJOK_SISWA', 'EVENT_KEGIATAN'])
+  type!: 'BERITA' | 'ARTIKEL' | 'OPINI' | 'POJOK_SISWA' | 'EVENT_KEGIATAN';
 
   @IsOptional()
   @IsString()

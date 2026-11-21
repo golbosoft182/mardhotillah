@@ -16,15 +16,17 @@ export function SectionHeading({
   description,
   align = "center",
   light = false,
+  maxWidth = "max-w-2xl",
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   align?: "center" | "left";
   light?: boolean;
+  maxWidth?: string;
 }) {
   return (
-    <div className={`${align === "center" ? "text-center mx-auto" : "text-left"} max-w-2xl mb-10`}>
+    <div className={`${align === "center" ? "text-center mx-auto" : "text-left"} ${maxWidth} mb-10`}>
       {eyebrow && (
         <p
           className={`mb-2 text-xs font-display font-bold uppercase tracking-[0.2em] ${

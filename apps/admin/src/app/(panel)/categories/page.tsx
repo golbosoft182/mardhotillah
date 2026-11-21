@@ -19,6 +19,7 @@ export default function CategoriesPage() {
         { key: "type", label: "Jenis", type: "select", options: [
           { value: "BERITA", label: "Berita" }, { value: "ARTIKEL", label: "Artikel" },
           { value: "OPINI", label: "Opini" }, { value: "POJOK_SISWA", label: "Pojok Siswa" },
+          { value: "EVENT_KEGIATAN", label: "Event atau Kegiatan" },
         ]},
       ]}
     />

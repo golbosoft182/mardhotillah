@@ -93,3 +93,48 @@ body {
 .cms-content a { @apply text-brand-500 underline underline-offset-2; }
 .cms-content img { @apply rounded-xl my-4; }
 .cms-content blockquote { @apply border-l-4 border-gold-400 pl-4 italic text-ink-soft my-4; }
+
+/* ============ Blok konten CMS kaya (mis. halaman Bimbingan Konseling) ============ */
+/* Halaman yang memakai wrapper .cms-rich mendapat judul dengan aksen emas. */
+.cms-content.cms-rich { @apply max-w-3xl; }
+.cms-content.cms-rich h2 { @apply text-2xl sm:text-3xl font-display font-bold text-brand-700 mt-12 mb-4; }
+.cms-content.cms-rich > :first-child { @apply mt-0; }
+.cms-content.cms-rich h2::after {
+  content: "";
+  display: block;
+  margin-top: 0.75rem;
+  height: 0.25rem;
+  width: 4rem;
+  border-radius: 9999px;
+  background-color: var(--color-gold-400);
+}
+
+/* Kartu & grid */
+.cms-content .cms-cards { @apply grid gap-5 sm:grid-cols-2 mt-6; }
+.cms-content .cms-cards-4 { @apply grid gap-5 sm:grid-cols-2 lg:grid-cols-4 mt-6; }
+
+.cms-content .cms-card { @apply rounded-2xl bg-white p-6 shadow-card ring-1 ring-brand-900/5; }
+.cms-content .cms-card-cream { @apply rounded-2xl bg-cream p-6 ring-1 ring-brand-900/5; }
+.cms-content .cms-card-danger { @apply rounded-3xl bg-red-50/60 p-6 shadow-card ring-1 ring-red-200; }
+
+.cms-content .cms-card h3,
+.cms-content .cms-card-cream h3 { @apply text-lg font-display font-bold text-ink mt-0 mb-2; }
+.cms-content .cms-card-danger h3 { @apply text-lg font-display font-bold text-red-700 mt-0 mb-2; }
+.cms-content .cms-card p,
+.cms-content .cms-card-cream p { @apply text-sm leading-relaxed text-ink-soft mb-0; }
+
+/* Daftar bernomor dengan lencana angka */
+.cms-content .cms-steps { @apply grid gap-4 sm:grid-cols-2 mt-6; counter-reset: cmsstep; }
+.cms-content .cms-step {
+  @apply flex items-start gap-4 rounded-2xl bg-white p-5 shadow-card ring-1 ring-brand-900/5 text-sm leading-relaxed text-ink;
+  counter-increment: cmsstep;
+}
+.cms-content .cms-step::before {
+  content: counter(cmsstep);
+  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-500 font-display text-sm font-bold text-white;
+}
+
+/* Kotak sorotan (mis. penutup) */
+.cms-content .cms-box { @apply mt-6 rounded-3xl bg-brand-700 p-6 text-white sm:p-8; }
+.cms-content .cms-box h3 { @apply text-lg font-display font-bold text-white mt-0 mb-2; }
+.cms-content .cms-box p { @apply text-sm leading-relaxed text-white/80 mb-0; }

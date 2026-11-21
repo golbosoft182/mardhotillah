@@ -17,9 +17,9 @@ export default async function ProgramPage() {
         breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Program" }]}
       />
       <Section>
-        <SectionHeading eyebrow="Program" title="Program Unggulan Mardhotillah" />
+        <SectionHeading eyebrow="Program" title="Program Unggulan SMK MARDHOTILLAH PLUS" />
         {data?.items?.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2">
             {data.items.map((p) => (
               <ProgramCard key={p.id} program={p} />
             ))}

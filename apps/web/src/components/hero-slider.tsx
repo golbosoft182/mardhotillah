@@ -39,6 +39,8 @@ export function HeroSlider({ slides, fallbackPrimary, fallbackSecondary }: Props
   activeRef.current = active;
   const pendingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reducedMotion = useRef(false);
+  // Titik awal sentuhan untuk deteksi swipe (khusus perangkat sentuh)
+  const touchStartX = useRef<number | null>(null);
 
   // Ganti slide: caption fade-out (300ms) → ganti konten → fade-in; gambar crossfade terpisah
   const goTo = useCallback(
@@ -72,12 +74,21 @@ export function HeroSlider({ slides, fallbackPrimary, fallbackSecondary }: Props
 
   return (
     <div
-      className="absolute inset-0 w-full"
+      className="absolute inset-0 w-full [touch-action:pan-y]"
       role="region"
       aria-roledescription="carousel"
       aria-label="Foto dan pengumuman utama"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={(e) => {
+        touchStartX.current = e.touches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(e) => {
+        if (touchStartX.current === null || slides.length < 2) return;
+        const dx = (e.changedTouches[0]?.clientX ?? touchStartX.current) - touchStartX.current;
+        touchStartX.current = null;
+        if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+      }}
       onKeyDown={(e) => {
         if (e.key === "ArrowLeft") go(-1);
         if (e.key === "ArrowRight") go(1);
@@ -144,14 +155,14 @@ export function HeroSlider({ slides, fallbackPrimary, fallbackSecondary }: Props
                   <Link
                     href={primary.href}
                     tabIndex={visible ? 0 : -1}
-                    className="inline-flex items-center justify-center rounded-full bg-gold-400 px-7 py-3.5 font-display font-semibold text-brand-800 shadow-card transition hover:bg-sun-400 hover:shadow-lift"
+                    className="inline-flex w-full items-center justify-center rounded-full bg-gold-400 px-7 py-3.5 font-display font-semibold text-brand-800 shadow-card transition hover:bg-sun-400 hover:shadow-lift sm:w-auto"
                   >
                     {primary.label}
                   </Link>
                   <Link
                     href={secondary.href}
                     tabIndex={visible ? 0 : -1}
-                    className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3.5 font-display font-semibold text-white transition hover:bg-white/10"
+                    className="inline-flex w-full items-center justify-center rounded-full border border-white/40 px-7 py-3.5 font-display font-semibold text-white transition hover:bg-white/10 sm:w-auto"
                   >
                     {secondary.label}
                   </Link>
@@ -162,14 +173,15 @@ export function HeroSlider({ slides, fallbackPrimary, fallbackSecondary }: Props
         );
       })()}
 
-      {/* Panah */}
+      {/* Panah: di layar kecil (<xl) dipindah ke sudut bawah agar tidak menimpa teks;
+          di desktop (xl+) tetap di tengah sisi kiri/kanan seperti semula. */}
       {slides.length > 1 && (
         <>
           <button
             type="button"
             onClick={() => go(-1)}
             aria-label="Slide sebelumnya"
-            className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/10 p-2.5 text-white/85 backdrop-blur-sm transition hover:bg-white/25 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:left-5"
+            className="absolute bottom-3.5 left-3 z-20 rounded-full bg-white/10 p-2.5 text-white/85 backdrop-blur-sm transition hover:bg-white/25 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:bottom-5 sm:left-5 xl:bottom-auto xl:top-1/2 xl:-translate-y-1/2"
           >
             <ChevronLeft className="h-5 w-5" aria-hidden />
           </button>
@@ -177,21 +189,21 @@ export function HeroSlider({ slides, fallbackPrimary, fallbackSecondary }: Props
             type="button"
             onClick={() => go(1)}
             aria-label="Slide berikutnya"
-            className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/10 p-2.5 text-white/85 backdrop-blur-sm transition hover:bg-white/25 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:right-5"
+            className="absolute bottom-3.5 right-3 z-20 rounded-full bg-white/10 p-2.5 text-white/85 backdrop-blur-sm transition hover:bg-white/25 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:bottom-5 sm:right-5 xl:bottom-auto xl:top-1/2 xl:-translate-y-1/2"
           >
             <ChevronRight className="h-5 w-5" aria-hidden />
           </button>
 
-          {/* Dots */}
+          {/* Dots — area sentuh diperbesar lewat pseudo-elemen (tampilan tetap sama) */}
           <div className="absolute bottom-3.5 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-5">
             {slides.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => goTo(i)}
-            aria-label={`Ke slide ${i + 1}`}
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Ke slide ${i + 1}`}
                 aria-current={i === active}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
+                className={`relative h-2.5 rounded-full transition-all duration-300 after:absolute after:-inset-2.5 after:content-[''] ${
                   i === active ? "w-8 bg-gold-400" : "w-2.5 bg-white/45 hover:bg-white/70"
                 }`}
               />

@@ -150,22 +150,81 @@ async function main() {
 
   // ---------- PROGRAMS ----------
   const programDefs = [
-    { unit: null, name: "Tahfidzul Qur'an", description: 'Program hafalan Al-Qur\'an terstruktur bagi seluruh peserta didik.', featured: true, order: 1 },
-    { unit: null, name: 'Bilingual', description: 'Penguasaan bahasa Arab dan Inggris untuk komunikasi aktif.', featured: true, order: 2 },
-    { unit: null, name: 'Leadership', description: 'Pembinaan jiwa kepemimpinan melalui organisasi dan kepemimpinan santri.', featured: true, order: 3 },
-    { unit: null, name: 'Mentorship', description: 'Pendampingan intensif oleh mentor untuk capaian akademik dan karakter.', featured: true, order: 4 },
-    { unit: null, name: 'Kepesantrenan', description: 'Pendidikan nilai keislaman, adab, dan kemandirian santri.', featured: true, order: 5 },
-    { unit: null, name: 'Program Akademik', description: 'Pembelajaran kurikulum nasional dengan bimbingan intensif.', featured: true, order: 6 },
-    { unit: null, name: 'Program Vokasi', description: 'Keahlian industri kreatif DKV untuk kesiapan kerja.', featured: true, order: 7 },
-    { unit: null, name: 'Ekstrakurikuler', description: 'Beragam kegiatan bakat dan minat siswa.', featured: true, order: 8 },
+    {
+      unit: null,
+      name: "Pondok Tahfidz / Tahfidzul Qur'an",
+      slug: 'tahfidzul-quran',
+      description: "Program unggulan hafalan Al-Qur'an 30 juz dengan bimbingan halaqah intensif dan target capaian yang terukur.",
+      image: 'https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=students%20memorizing%20the%20Quran%20in%20a%20bright%20modern%20Islamic%20boarding%20school%20classroom%2C%20boys%20in%20white%20kufi%20and%20koko%20shirts%2C%20open%20Quran%20on%20rehal%20stands%2C%20warm%20natural%20light%2C%20photorealistic&image_size=landscape_4_3',
+      content:
+        "<p>Program <strong>Pondok Tahfidz / Tahfidzul Qur'an</strong> membina santri untuk menghafal Al-Qur'an 30 juz dengan sanad dan adab yang benar melalui halaqah harian bersama musyrif berpengalaman.</p>" +
+        '<h2>Target Capaian</h2><ul><li>Hafalan 30 juz dengan mutu tajwid dan makhraj yang baik</li><li>Setoran (tahsin &amp; tahfidz) harian bersama musyrif</li><li>Ujian hafalan berkala dan sertifikasi per juz</li></ul>' +
+        '<h2>Metode Pembelajaran</h2><ul><li>Halaqah kecil (1 musyrif untuk 10-12 santri)</li><li>Murojaah pagi dan setoran sore</li><li>Karantina tahfidz menjelang ujian</li></ul>' +
+        '<h2>Fasilitas Pendukung</h2><p>Ruang halaqah ber-AC, mushaf standar, dan asrama tahfidz yang kondusif.</p>',
+      featured: true,
+      order: 1,
+      seoTitle: "Pondok Tahfidz / Tahfidzul Qur'an - Yayasan Mardhotillah",
+      seoDescription: "Program tahfidz 30 juz dengan halaqah intensif, target terukur, dan bimbingan musyrif berpengalaman.",
+    },
+    {
+      unit: null,
+      name: 'Nahwu Sorof',
+      slug: 'nahwu-sorof',
+      description: 'Pendalaman ilmu alat bahasa Arab (nahwu dan sorof) untuk memahami kitab kuning dan teks klasik.',
+      image: 'https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=arabic%20grammar%20nahwu%20and%20sorof%20class%2C%20students%20studying%20classical%20yellow%20arabic%20kitab%20books%2C%20ustadz%20teaching%20arabic%20calligraphy%20on%20whiteboard%2C%20traditional%20islamic%20school%20classroom%2C%20warm%20light%2C%20photorealistic&image_size=landscape_4_3',
+      content:
+        '<p><strong>Nahwu Sorof</strong> adalah program pendalaman ilmu alat bahasa Arab untuk membekali santri kemampuan membaca dan memahami kitab kuning secara mandiri.</p>' +
+        '<h2>Materi Utama</h2><ul><li>Nahwu: I\'rob, jumlah, dan tarkib kalimat</li><li>Sorof: wazan, tashrif, dan perubahan kata</li><li>Praktik membaca kitab kuning bertahap</li></ul>' +
+        '<h2>Kitab Rujukan</h2><ul><li>Al-Jurumiyah dan Imrithi untuk nahwu dasar-menengah</li><li>Amtsilah Tashrifiyah untuk sorof</li><li>Alfiyah Ibnu Malik untuk tingkat lanjut</li></ul>' +
+        '<h2>Output Program</h2><p>Santri mampu menterjemah dan menjelaskan struktur kalimat pada teks berbahasa Arab klasik.</p>',
+      featured: true,
+      order: 2,
+      seoTitle: 'Nahwu Sorof - Yayasan Mardhotillah',
+      seoDescription: 'Pendalaman nahwu dan sorof untuk menguasai kitab kuning dan teks klasik bahasa Arab.',
+    },
   ];
   for (const p of programDefs) {
-    const slug = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     await prisma.program.upsert({
-      where: { slug },
+      where: { slug: p.slug },
       update: {},
-      create: { ...p, unit: p.unit as any, slug, status: 'PUBLISHED' },
+      create: { ...p, unit: p.unit as any, status: 'PUBLISHED' },
     });
+  }
+
+  // ---------- TEACHERS (Wali Kelas & Guru — foto dari web/public/images/foto-guru) ----------
+  // hanya diisi bila belum ada data guru, agar tidak menimpa data yang sudah dikelola via CMS
+  const teacherCount = await prisma.teacher.count();
+  if (teacherCount === 0) {
+    const teacherDefs: { name: string; file: string }[] = [
+      { name: 'Dani', file: 'dani.png' },
+      { name: 'Dita', file: 'dita.png' },
+      { name: 'Fahrul', file: 'fahrul%20new.jpg' },
+      { name: 'Imie', file: 'imie.png' },
+      { name: 'Izul', file: 'izul.png' },
+      { name: 'Junaidi', file: 'junaidi.png' },
+      { name: 'Lukman', file: 'lukman.png' },
+      { name: 'Mega', file: 'mega.png' },
+      { name: 'Nia', file: 'nia.png' },
+      { name: 'Nurul', file: 'nurul.png' },
+      { name: 'Orin', file: 'orin%20new.jpg' },
+      { name: 'Ria', file: 'ria.png' },
+      { name: 'Serli', file: 'serli.png' },
+      { name: 'Wardikin', file: 'wardikin.png' },
+      { name: 'Yustika', file: 'yustika.png' },
+    ];
+    let teacherOrder = 1;
+    for (const t of teacherDefs) {
+      await prisma.teacher.create({
+        data: {
+          unit: 'SMK',
+          name: t.name,
+          position: 'Wali Kelas',
+          photo: `/images/foto-guru/${t.file}`,
+          order: teacherOrder++,
+          isActive: true,
+        },
+      });
+    }
   }
 
   // ---------- ACHIEVEMENTS (6 dummy dengan foto) ----------
@@ -265,6 +324,37 @@ async function main() {
     });
   }
 
+  // ---------- KARYA DKV (Showcase karya desain siswa SMK — 8 dummy) ----------
+  const dkvDefs: { title: string; category: string; author: string; daysAgo: number; img: string; desc: string; mediaType?: string; file?: string }[] = [
+    { title: 'Poster Peringatan Maulid Nabi', category: 'Poster', author: 'Aulia Rahman', daysAgo: 3, img: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=75', desc: 'Poster dakwah untuk peringatan Maulid Nabi karya siswa kelas XI DKV.' },
+    { title: 'Identitas Visual Kedai Santri', category: 'Logo & Branding', author: 'Nabila Putri', daysAgo: 9, img: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=900&q=75', desc: 'Desain logo dan identitas visual untuk kedai makanan ringan santri.' },
+    { title: 'Ilustrasi Karakter Superhero Muslim', category: 'Ilustrasi', author: 'Fikri Hidayat', daysAgo: 16, img: 'https://images.unsplash.com/photo-1618556450991-2f1af64e8191?w=900&q=75', desc: 'Ilustrasi digital karakter bertema superhero muslim untuk kampanye sekolah.' },
+    { title: 'Fotografi Produk Kerajinan Pesantren', category: 'Fotografi', author: 'Salma Kamila', daysAgo: 24, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=900&q=75', desc: 'Sesi foto produk kerajinan santri untuk katalog UMKM pesantren.' },
+    { title: 'Motion Graphic Profil SMK', category: 'Animasi', author: 'Rizky Maulana', daysAgo: 33, img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=900&q=75', desc: 'Animasi motion graphic profil sekolah untuk kebutuhan promosi PPDB.' },
+    { title: 'Kemasan Snack Sehat Mardhotillah', category: 'Desain Kemasan', author: 'Hafizh Alfarizi', daysAgo: 41, img: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=900&q=75', desc: 'Desain kemasan produk makanan sehat hasil kolaborasi unit usaha pesantren.' },
+    { title: 'Banner Kampanye Gemar Membaca', category: 'Poster', author: 'Zahra Ashila', daysAgo: 52, img: '', desc: 'Banner kampanye literasi untuk perpustakaan sekolah — berkas desain dalam format PDF siap cetak.', mediaType: 'PDF', file: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+    { title: 'UI Mobile App Jadwal Sholat', category: 'UI/UX', author: 'Ilham Saputra', daysAgo: 64, img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=75', desc: 'Rancangan antarmuka aplikasi jadwal sholat untuk proyek akhir siswa DKV — studi kasus lengkap dalam PDF.', mediaType: 'PDF', file: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+  ];
+  for (const w of dkvDefs) {
+    const slug = w.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const mediaType = w.mediaType ?? 'IMAGE';
+    const file = w.file || null;
+    const existing = await prisma.dkvWork.findUnique({ where: { slug } });
+    if (!existing) {
+      await prisma.dkvWork.create({
+        data: {
+          unit: 'SMK', title: w.title, slug,
+          description: w.desc, image: w.img || null, category: w.category, author: w.author,
+          mediaType, file,
+          workDate: new Date(now - w.daysAgo * 86400000),
+          status: 'PUBLISHED', publishedAt: new Date(now - w.daysAgo * 86400000),
+        },
+      });
+    } else if (file && existing.mediaType !== 'PDF') {
+      await prisma.dkvWork.update({ where: { id: existing.id }, data: { mediaType, file } });
+    }
+  }
+
   // ---------- EVENTS (5 agenda mendatang dengan foto) ----------
   const eventDefs = [
     { unit: 'YAYASAN', title: 'Open House Mardhotillah', slug: 'open-house-mardhotillah', desc: 'Kunjungan calon peserta didik dan orang tua untuk mengenal lingkungan pendidikan Mardhotillah.', loc: 'Kompleks Yayasan Mardhotillah', inDays: 14, img: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=1200&q=75' },
@@ -343,7 +433,7 @@ async function main() {
       ['Tentang Kami', 'Profil Yayasan', '/tentang/profil', 1],
       ['Tentang Kami', 'Sejarah', '/tentang/sejarah', 2],
       ['Tentang Kami', 'Visi & Misi', '/tentang/visi-misi', 3],
-      ['Tentang Kami', 'Struktur Organisasi', '/tentang/struktur', 4],
+      ['Tentang Kami', 'Struktur Organisasi', '/tentang/struktur-organisasi', 4],
       ['Pendidikan', 'Pondok Pesantren', '/ponpes', 1],
       ['Pendidikan', 'SMP Unggulan', '/smp', 2],
       ['Pendidikan', 'SMK Mardhotillah Plus', '/smk', 3],
@@ -352,11 +442,28 @@ async function main() {
       ['Publikasi', 'Opini Guru', '/opini', 3],
       ['Publikasi', 'Pojok Siswa', '/pojok-siswa', 4],
       ['Publikasi', 'Agenda', '/agenda', 5],
-      ['Publikasi', 'Aktivitas', '/aktivitas', 6],
+      ['Publikasi', 'Ekstrakulikuler', '/ekstrakulikuler', 6],
       ['Publikasi', 'Galeri', '/galeri', 7],
     ];
     for (const [parent, label, url, order] of children) {
       await prisma.menuItem.create({ data: { label, url, order, menuId: menu.id, parentId: created[parent] } });
+    }
+  }
+
+  const footerExists = await prisma.menu.findFirst({ where: { location: 'FOOTER' } });
+  if (!footerExists) {
+    const menu = await prisma.menu.create({ data: { name: 'Footer', location: 'FOOTER' } });
+    const links = [
+      { label: 'Profil Yayasan', url: '/tentang/profil', order: 1 },
+      { label: 'Berita', url: '/berita', order: 2 },
+      { label: 'Agenda', url: '/agenda', order: 3 },
+      { label: 'Prestasi', url: '/prestasi', order: 4 },
+      { label: 'Fasilitas', url: '/fasilitas', order: 5 },
+      { label: 'SPMB', url: '/ppdb', order: 6 },
+      { label: 'Kontak', url: '/kontak', order: 7 },
+    ];
+    for (const l of links) {
+      await prisma.menuItem.create({ data: { ...l, menuId: menu.id } });
     }
   }
 
@@ -428,17 +535,14 @@ async function main() {
       },
     },
     {
-      key: 'ecosystem',
-      label: 'Ekosistem Pendidikan (3 kartu unit)',
+      key: 'dkv_showcase',
+      label: 'Showcase Karya DKV (kartu karya terbaru)',
       data: {
-        heading: 'Tiga Jenjang, Satu Tujuan',
-        eyebrow: 'Ekosistem Pendidikan',
-        description: 'Satu ekosistem pendidikan terpadu dari pendidikan dasar hingga kejuruan dalam lingkungan pesantren.',
-        items: [
-          { name: 'Pondok Pesantren Mardhotillah', tagline: 'Pendidikan Pesantren', description: "Pendidikan berbasis pesantren dengan program tahfidzul Qur'an, bahasa Arab–Inggris, dan pembentukan karakter santri.", href: '/ponpes', image: 'https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&q=75' },
-          { name: 'SMP Unggulan Mardhotillah', tagline: 'Tahfidz · Bilingual · Leadership', description: 'SMP dengan program unggulan Tahfidzul Qur\'an, Bilingual Excellence, Leadership, dan Mentorship akademik.', href: '/smp', image: 'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800&q=75' },
-          { name: 'SMK Mardhotillah Plus', tagline: 'Sekolah Plus Nyantren Makin Keren', description: 'SMK program keahlian DKV dengan kesiapan industri kreatif, portofolio karya, dan link and match dunia kerja.', href: '/smk', image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=75' },
-        ],
+        eyebrow: 'Showcase Karya DKV',
+        heading: 'Karya Desain Siswa SMK Mardhotillah Plus',
+        description: 'Portofolio karya desain komunikasi visual siswa — poster, branding, ilustrasi, animasi, hingga UI/UX.',
+        buttonText: 'Lihat Lebih Banyak',
+        buttonLink: '/karya-dkv',
       },
     },
     {
@@ -475,7 +579,8 @@ async function main() {
     await prisma.homeSection.upsert({ where: { key: s.key }, update: {}, create: s });
   }
   // section "activities" dihapus dari beranda — kini jadi halaman /aktivitas dengan CMS tersendiri
-  await prisma.homeSection.deleteMany({ where: { key: 'activities' } });
+  // section "ecosystem" digantikan oleh "dkv_showcase" (Showcase Karya DKV)
+  await prisma.homeSection.deleteMany({ where: { key: { in: ['activities', 'ecosystem'] } } });
 
   // ---------- POPUP SPMB (flyer demo — satu per jenjang + umum) ----------
   const popupCount = await prisma.popup.count();

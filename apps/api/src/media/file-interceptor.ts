@@ -8,14 +8,28 @@ import { randomBytes } from 'crypto';
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads');
 
-const ALLOWED = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-  'image/svg+xml',
+// MIME non-image yang tetap diizinkan (dokumen).
+const ALLOWED_MIME = [
   'application/pdf',
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+  'application/vnd.ms-word', // sebagian OS lama
 ];
+
+// Ekstensi yang diizinkan sebagai fallback — sebagian browser/OS mengirim MIME
+// tidak standar (mis. "image/jpg" untuk berkas .JPG) atau "application/octet-stream"
+// saat tipe tidak dikenali, sehingga ekstensi dipakai untuk memvalidasi.
+const ALLOWED_EXT = [
+  '.jpg', '.jpeg', '.jpe', '.jfif', '.png', '.webp', '.gif', '.svg',
+  '.avif', '.heic', '.heif', '.bmp', '.tif', '.tiff', '.ico',
+  '.pdf', '.doc', '.docx',
+];
+
+function isAllowed(file: { mimetype: string; originalname: string }): boolean {
+  const mime = (file.mimetype ?? '').toLowerCase();
+  if (mime.startsWith('image/') || ALLOWED_MIME.includes(mime)) return true;
+  return ALLOWED_EXT.includes(extname(file.originalname).toLowerCase());
+}
 
 export function ensureUploadDir() {
   if (!existsSync(UPLOAD_DIR)) mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -34,8 +48,8 @@ export const FileInterceptor = (fieldName: string) =>
       },
     }),
     limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
-    fileFilter: (_req: any, file: { mimetype: string }, cb: (e: Error | null, ok?: boolean) => void) => {
-      if (!ALLOWED.includes(file.mimetype)) {
+    fileFilter: (_req: any, file: { mimetype: string; originalname: string }, cb: (e: Error | null, ok?: boolean) => void) => {
+      if (!isAllowed(file)) {
         return cb(new BadRequestException('Tipe file tidak diizinkan'));
       }
       cb(null, true);

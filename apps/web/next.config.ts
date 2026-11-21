@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
       // Alias /spmb → halaman pendaftaran di /ppdb (permanen, link lama tetap jalan)
       { source: "/spmb", destination: "/ppdb", permanent: true },
       { source: "/spmb/:path*", destination: "/ppdb/:path*", permanent: true },
+      // Slug lama /aktivitas → /ekstrakulikuler
+      { source: "/aktivitas", destination: "/ekstrakulikuler", permanent: true },
+      { source: "/aktivitas/:path*", destination: "/ekstrakulikuler/:path*", permanent: true },
     ];
   },
   images: {
@@ -27,6 +30,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "placehold.co" },
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "coresg-normal.trae.ai" },
       apiImagePattern,
     ],
   },

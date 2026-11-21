@@ -9,9 +9,12 @@ import {
   TagsModule,
   PagesModule,
   EventsModule,
+  KesiswaanProgramsModule,
   ActivitiesModule,
   AchievementsModule,
   ProgramsModule,
+  DkvWorksModule,
+  DkvJournalsModule,
   ExtracurricularsModule,
   GalleriesModule,
   TeachersModule,
@@ -19,7 +22,11 @@ import {
   FacilitiesModule,
   DocumentsModule,
   StudentsModule,
+  IndustryPartnersModule,
 } from './content-modules';
+import { DkvJournalStatsModule } from './dkv-journals/dkv-journal-stats.module';
+import { JobVacanciesModule } from './job-vacancies/job-vacancies.module';
+import { RoleMenusModule } from './role-menus/role-menus.module';
 import { MediaModule } from './media/media.module';
 import { PpdbModule } from './ppdb/ppdb.module';
 import { MenusModule } from './menus/menus.module';
@@ -44,9 +51,15 @@ import { WhatsappModule } from './whatsapp/whatsapp.module';
     TagsModule,
     PagesModule,
     EventsModule,
+    KesiswaanProgramsModule,
     ActivitiesModule,
     AchievementsModule,
     ProgramsModule,
+    DkvWorksModule,
+    DkvJournalsModule,
+    DkvJournalStatsModule,
+    JobVacanciesModule,
+    RoleMenusModule,
     ExtracurricularsModule,
     GalleriesModule,
     TeachersModule,
@@ -54,6 +67,7 @@ import { WhatsappModule } from './whatsapp/whatsapp.module';
     FacilitiesModule,
     DocumentsModule,
     StudentsModule,
+    IndustryPartnersModule,
     MediaModule,
     PpdbModule,
     MenusModule,
@@ -76,9 +90,11 @@ export class AppModule implements NestModule {
         'api/posts',
         'api/pages',
         'api/events',
+        'api/kesiswaan-programs',
         'api/achievements',
         'api/activities',
         'api/programs',
+        'api/dkv-works',
         'api/extracurriculars',
         'api/galleries',
         'api/teachers',

@@ -35,3 +35,23 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Area editor WYSIWYG (RichTextEditor) — pratinjau gaya konten saat menulis */
+.cms-editor:focus { outline: none; }
+.cms-editor:empty::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--color-ink-soft) 55%, transparent);
+  pointer-events: none;
+}
+.cms-editor h1 { @apply mt-4 mb-2 font-display text-2xl font-bold text-brand-700; }
+.cms-editor h2 { @apply mt-4 mb-2 font-display text-xl font-bold text-brand-700; }
+.cms-editor h3 { @apply mt-3 mb-1.5 font-display text-lg font-semibold text-ink; }
+.cms-editor p { @apply mb-3 leading-relaxed text-ink-soft; }
+.cms-editor ul { @apply mb-3 list-disc space-y-1 pl-5 text-ink-soft; }
+.cms-editor ol { @apply mb-3 list-decimal space-y-1 pl-5 text-ink-soft; }
+.cms-editor a { @apply text-brand-500 underline underline-offset-2; }
+.cms-editor img { @apply my-3 max-w-full rounded-lg; }
+.cms-editor blockquote { @apply my-3 border-l-4 border-gold-400 pl-3 italic text-ink-soft; }
+.cms-editor hr { @apply my-4 border-brand-100; }
+.cms-editor table { @apply my-3 w-full border-collapse text-left text-sm; }
+.cms-editor th, .cms-editor td { @apply border border-brand-100 px-3 py-1.5; }

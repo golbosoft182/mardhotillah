@@ -11,7 +11,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Badge, SectionHeading } from "@/components/ui/container";
 import {
   AchievementCard,
-  EducationUnitCard,
+  DkvWorkCard,
   EventCard,
   NewsCard,
   ProgramCard,
@@ -21,6 +21,7 @@ import { HeroSlider, type HeroSlide } from "@/components/hero-slider";
 import { apiServer } from "@/lib/api";
 import type {
   Achievement,
+  DkvWork,
   EventItem,
   Gallery,
   HomeSection,
@@ -29,23 +30,11 @@ import type {
   Program,
   Settings,
 } from "@/lib/api";
-import { resolveImageUrl } from "@/lib/api";
 import { mapEmbedSrc } from "@/lib/maps";
 
 export const revalidate = 60;
 
 /* ---------- Dummy fallback (dipakai bila section belum diatur di CMS) ---------- */
-
-const DUMMY_ECOSYSTEM = {
-  eyebrow: "Ekosistem Pendidikan",
-  heading: "Tiga Jenjang, Satu Tujuan",
-  description: "Satu ekosistem pendidikan terpadu dari pendidikan dasar hingga kejuruan dalam lingkungan pesantren.",
-  items: [
-    { name: "Pondok Pesantren Mardhotillah", tagline: "Pendidikan Pesantren", description: "Pendidikan berbasis pesantren dengan program tahfidzul Qur'an, bahasa Arab–Inggris, dan pembentukan karakter santri.", href: "/ponpes", image: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&q=75" },
-    { name: "SMP Unggulan Mardhotillah", tagline: "Tahfidz · Bilingual · Leadership", description: "SMP dengan program unggulan Tahfidzul Qur'an, Bilingual Excellence, Leadership, dan Mentorship akademik.", href: "/smp", image: "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800&q=75" },
-    { name: "SMK Mardhotillah Plus", tagline: "Sekolah Plus Nyantren Makin Keren", description: "SMK program keahlian DKV dengan kesiapan industri kreatif, portofolio karya, dan link and match dunia kerja.", href: "/smk", image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=75" },
-  ],
-};
 
 const DUMMY_BENEFITS = {
   eyebrow: "Keunggulan Kami",
@@ -137,27 +126,19 @@ interface ActivityItem {
   category?: string | null;
 }
 
-interface EcosystemItem {
-  name?: string;
-  tagline?: string;
-  description?: string;
-  href?: string;
-  image?: string;
-}
-
 export default async function HomePage() {
-  const [news, events, achievements, activities, programs, galleries, settings, sections] = await Promise.all([
+  const [news, events, achievements, activities, programs, dkvWorks, kegiatan, settings, sections] = await Promise.all([
     apiServer<ListResponse<Post>>("/posts", { limit: 3 }),
     apiServer<ListResponse<EventItem>>("/events", { limit: 4 }),
     apiServer<ListResponse<Achievement>>("/achievements", { limit: 8 }),
     apiServer<ListResponse<ActivityItem>>("/activities", { limit: 4 }),
     apiServer<ListResponse<Program>>("/programs", { limit: 8 }),
-    apiServer<ListResponse<Gallery>>("/galleries", { limit: 1 }),
+    apiServer<ListResponse<DkvWork>>("/dkv-works", { limit: 4, sort: "newest" }),
+    apiServer<ListResponse<Post>>("/posts", { limit: 3, type: "EVENT_KEGIATAN" }),
     apiServer<Settings>("/settings"),
     apiServer<HomeSection[]>("/home-sections"),
   ]);
 
-  const gallery = galleries?.items?.[0] ?? null;
   const mapSrc = mapEmbedSrc(settings?.maps_embed);
 
   // Hero dari CMS (Pengaturan) dengan fallback ke teks default
@@ -167,7 +148,7 @@ export default async function HomePage() {
     "Pendidikan terpadu Mardhotillah menghadirkan lingkungan pendidikan yang mengintegrasikan nilai keislaman, ilmu pengetahuan, karakter, keterampilan dan pengembangan potensi peserta didik.";
 
   // Semua section dari CMS — fallback dummy bila belum diatur
-  const ecosystem = (sectionData(sections, "ecosystem") ?? DUMMY_ECOSYSTEM) as typeof DUMMY_ECOSYSTEM & { items: EcosystemItem[] };
+  const showcase = sectionData(sections, "dkv_showcase") ?? {};
   const benefits = (sectionData(sections, "benefits") ?? DUMMY_BENEFITS) as typeof DUMMY_BENEFITS;
   const cta = (sectionData(sections, "spmb_cta") ?? DUMMY_CTA) as typeof DUMMY_CTA;
 
@@ -196,25 +177,30 @@ export default async function HomePage() {
         />
       </section>
 
-      {/* 4. Education Ecosystem — dari CMS */}
+      {/* 4. Showcase Karya DKV — dari CMS + koleksi DkvWorks (menggantikan section Ekosistem Pendidikan) */}
       <Section id="pendidikan" className="bg-cream">
         <SectionHeading
-          eyebrow={str(ecosystem.eyebrow, "Ekosistem Pendidikan")}
-          title={str(ecosystem.heading, "Tiga Jenjang, Satu Tujuan")}
-          description={str(ecosystem.description, "")}
+          eyebrow={str(showcase.eyebrow, "Showcase Karya DKV")}
+          title={str(showcase.heading, "Karya Desain Siswa SMK Mardhotillah Plus")}
+          description={str(showcase.description, "")}
+          maxWidth="max-w-3xl"
         />
-        <div className="grid gap-6 md:grid-cols-3">
-          {(ecosystem.items as EcosystemItem[]).map((u) => (
-            <EducationUnitCard
-              key={u.name}
-              name={u.name ?? "Unit"}
-              tagline={u.tagline ?? ""}
-              description={u.description ?? ""}
-              href={u.href ?? "#"}
-              image={u.image}
-            />
-          ))}
-        </div>
+        {dkvWorks?.items?.length ? (
+          <>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {dkvWorks.items.slice(0, 4).map((w) => (
+                <DkvWorkCard key={w.id} work={w} />
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <ButtonLink href={str(showcase.buttonLink, "/karya-dkv")} variant="outline">
+                {str(showcase.buttonText, "Lihat Lebih Banyak")}
+              </ButtonLink>
+            </div>
+          </>
+        ) : (
+          <EmptyState title="Belum ada karya DKV" hint="Karya terbaru akan tampil di sini setelah dipublikasikan lewat CMS." />
+        )}
       </Section>
 
       {/* 5. Mengapa Mardhotillah — dari CMS */}
@@ -250,7 +236,7 @@ export default async function HomePage() {
           description="Program pendidikan unggulan yang terintegrasi di seluruh satuan pendidikan Mardhotillah."
         />
         {programs?.items?.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2">
             {programs.items.map((p) => (
               <ProgramCard key={p.id} program={p} />
             ))}
@@ -269,7 +255,7 @@ export default async function HomePage() {
         />
         {achievements?.items?.length ? (
           <>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {achievements.items.slice(0, 4).map((a) => (
                 <AchievementCard key={a.id} item={a} />
               ))}
@@ -327,46 +313,33 @@ export default async function HomePage() {
         )}
       </Section>
 
-      {/* 10. Gallery — dari koleksi Galleries */}
-      {gallery && (
+      {/* 10. Kegiatan (Event atau Kegiatan) — dari koleksi Posts */}
+      {kegiatan?.items?.length ? (
         <Section className="bg-cream">
-          <SectionHeading eyebrow="Galeri" title="Momen Kegiatan" />
-          <div className="columns-2 gap-4 sm:columns-3 lg:columns-4 [&>*]:mb-4">
-            {gallery.items?.slice(0, 8).map((item, i) => (
-              <Link
-                key={item.id}
-                href="/galeri"
-                aria-label={`Lihat momen kegiatan: ${item.caption ?? "foto"}`}
-                className={`group block break-inside-avoid overflow-hidden rounded-2xl shadow-card ${i % 3 === 0 ? "aspect-[3/4]" : i % 3 === 1 ? "aspect-square" : "aspect-[4/3]"}`}
-              >
-                <Image
-                  src={resolveImageUrl(item.url)!}
-                  alt={item.alt ?? item.caption ?? "Foto kegiatan"}
-                  width={600}
-                  height={i % 3 === 0 ? 800 : 500}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </Link>
+          <SectionHeading eyebrow="Kegiatan" title="Kegiatan Siswa SMK Mardhotillah Plus" align="center" />
+          <div className="grid gap-6 md:grid-cols-3">
+            {kegiatan.items.map((p) => (
+              <NewsCard key={p.id} post={p} basePath="/kegiatan" />
             ))}
           </div>
           <div className="mt-8 text-center">
-            <ButtonLink href="/galeri" variant="outline">
-              Lihat Galeri Lengkap
+            <ButtonLink href="/kegiatan" variant="outline">
+              Lihat Semua Kegiatan
             </ButtonLink>
           </div>
         </Section>
-      )}
+      ) : null}
 
-      {/* 11. Aktivitas Siswa & Santri — dari koleksi Activities */}
+      {/* 11. Ekstrakulikuler — dari koleksi Activities */}
       {activities?.items?.length ? (
         <Section className="bg-white">
-          <SectionHeading eyebrow="Kehidupan di Mardhotillah" title="Aktivitas Siswa & Santri" />
+          <SectionHeading title="Ekstrakulikuler" />
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {activities.items.slice(0, 4).map((a) => (
               <Link
                 key={a.id}
-                href="/aktivitas"
-                aria-label={`Lihat aktivitas: ${a.title}`}
+                href="/ekstrakulikuler"
+                aria-label={`Lihat ekstrakulikuler: ${a.title}`}
                 className="group relative block aspect-[4/5] overflow-hidden rounded-2xl shadow-card"
               >
                 <Image
@@ -383,8 +356,8 @@ export default async function HomePage() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <ButtonLink href="/aktivitas" variant="outline">
-              Lihat Semua Aktivitas
+            <ButtonLink href="/ekstrakulikuler" variant="outline">
+              Lihat Semua Ekstrakulikuler
             </ButtonLink>
           </div>
         </Section>

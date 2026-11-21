@@ -17,6 +17,7 @@ interface PostRow {
   updatedAt: string;
   publishedAt?: string | null;
   author?: { name: string } | null;
+  category?: { name: string } | null;
 }
 
 interface ListResponse<T> {
@@ -31,7 +32,17 @@ const TYPES = [
   { value: "ARTIKEL", label: "Artikel" },
   { value: "OPINI", label: "Opini Guru" },
   { value: "POJOK_SISWA", label: "Pojok Siswa" },
+  { value: "EVENT_KEGIATAN", label: "Event atau Kegiatan" },
 ];
+
+// Path publik per jenis, untuk tautan "Lihat di website"
+const TYPE_PATHS: Record<string, string> = {
+  BERITA: "berita",
+  ARTIKEL: "artikel",
+  OPINI: "opini",
+  POJOK_SISWA: "pojok-siswa",
+  EVENT_KEGIATAN: "kegiatan",
+};
 
 const UNITS = [
   { value: "", label: "Semua Unit" },
@@ -150,11 +161,12 @@ export default function PostsListPage() {
       {/* Tabel */}
       <AdminCard className="overflow-x-auto p-0">
         {data?.items?.length ? (
-          <table className="w-full min-w-[720px] text-left text-sm">
+          <table className="w-full min-w-[860px] text-left text-sm">
             <thead>
               <tr className="border-b border-brand-100 text-xs uppercase tracking-wider text-ink-soft">
                 <th className="px-5 py-4 font-semibold">Judul</th>
                 <th className="px-5 py-4 font-semibold">Jenis</th>
+                <th className="px-5 py-4 font-semibold">Kategori</th>
                 <th className="px-5 py-4 font-semibold">Unit</th>
                 <th className="px-5 py-4 font-semibold">Status</th>
                 <th className="px-5 py-4 font-semibold">Diperbarui</th>
@@ -176,7 +188,7 @@ export default function PostsListPage() {
                     <div className="flex items-center justify-end gap-1.5">
                       {p.status === "PUBLISHED" ? (
                         <a
-                          href={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100"}/${p.type === "BERITA" ? "berita" : "artikel"}/${p.slug}`}
+                          href={`${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100"}/${TYPE_PATHS[p.type] ?? "berita"}/${p.slug}`}
                           target="_blank"
                           rel="noreferrer"
                           className="rounded-lg p-2 text-ink-soft transition hover:bg-brand-50 hover:text-brand-600"

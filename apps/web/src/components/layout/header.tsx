@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { MegaMenu, type NavNode } from "./mega-menu";
 import { TopbarWidgets } from "./topbar-widgets";
-import { apiServer, type MenuResponse, type Settings } from "@/lib/api";
+import { apiServer, type MenuItem, type MenuResponse, type Settings } from "@/lib/api";
 
 export async function Header() {
   const [menuRes, settings] = await Promise.all([
@@ -14,14 +14,13 @@ export async function Header() {
   const siteName = settings?.site_name ?? "Yayasan Mardhotillah";
   const siteSubtitle = settings?.site_subtitle ?? "Ponpes · SMP · SMK";
   const fallback = (await import("./mega-menu")).FALLBACK_NAV;
-  const nav: NavNode[] =
-    menuRes && menuRes.items.length > 0
-      ? menuRes.items.map((i) => ({
-          label: i.label,
-          url: i.url,
-          children: i.children?.map((c) => ({ label: c.label, url: c.url })),
-        }))
-      : fallback;
+  // Peta rekursif — submenu bisa bertingkat (kedalaman tidak dibatasi).
+  const toNavNode = (i: MenuItem): NavNode => ({
+    label: i.label,
+    url: i.url,
+    children: i.children?.length ? i.children.map(toNavNode) : undefined,
+  });
+  const nav: NavNode[] = menuRes && menuRes.items.length > 0 ? menuRes.items.map(toNavNode) : fallback;
 
   return (
     <>
@@ -53,19 +52,19 @@ export async function Header() {
         </div>
       )}
       <header className="sticky top-0 z-40 border-b border-brand-900/10 bg-white/90 backdrop-blur-md">
-      <div className="mx-auto grid w-full grid-cols-[auto_1fr] items-center gap-3 px-4 sm:px-6 xl:h-18 xl:grid-cols-[1fr_auto_1fr] xl:px-10">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 justify-self-start" aria-label={`${siteName} — Beranda`}>
+      <div className="mx-auto grid w-full grid-cols-[auto_1fr] items-center gap-3 px-4 py-2.5 sm:px-6 xl:h-18 xl:grid-cols-[1fr_auto_1fr] xl:px-10 xl:py-0">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 justify-self-start" aria-label={`${siteName} — Beranda`}>
           <Image
             src="/images/logos/yayasan.webp"
             alt="Logo Yayasan Mardhotillah"
             width={44}
             height={44}
-            className="h-10 w-10 rounded-xl object-contain sm:h-11 sm:w-11"
+            className="h-10 w-10 shrink-0 rounded-xl object-contain sm:h-11 sm:w-11"
             priority
           />
-          <span className="leading-tight">
-            <span className="block whitespace-nowrap font-display text-base font-extrabold uppercase tracking-wide text-brand-700 sm:text-lg">{siteName}</span>
-            <span className="hidden whitespace-nowrap text-xs font-medium text-ink-soft sm:text-sm md:block">{siteSubtitle}</span>
+          <span className="min-w-0 leading-tight">
+            <span className="block truncate font-display text-sm font-extrabold uppercase tracking-wide text-brand-700 sm:text-lg">{siteName}</span>
+            <span className="hidden truncate text-xs font-medium text-ink-soft sm:text-sm md:block">{siteSubtitle}</span>
           </span>
         </Link>
         <nav aria-label="Menu" className="hidden min-w-0 xl:block">
@@ -73,10 +72,10 @@ export async function Header() {
         </nav>
         <div className="flex items-center gap-3 justify-self-end">
           <Link
-            href="/ppdb"
+            href="/kontak"
             className="hidden rounded-full bg-gold-400 px-5 py-2.5 font-display text-sm font-semibold text-brand-800 shadow-card transition hover:bg-sun-400 sm:inline-flex"
           >
-            SPMB
+            Kontak
           </Link>
           <span className="xl:hidden">
             <MegaMenu nav={nav} siteName={siteName} />

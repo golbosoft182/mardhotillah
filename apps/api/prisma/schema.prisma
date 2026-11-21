@@ -35,6 +35,7 @@ enum PostType {
   ARTIKEL
   OPINI
   POJOK_SISWA
+  EVENT_KEGIATAN
 }
 
 enum GalleryKind {
@@ -75,6 +76,19 @@ model User {
   refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+/// RBAC menu CMS — daftar menu yang boleh diakses per peran (role).
+/// `menus` berisi key menu (mis. "/posts"). Bila belum diatur, sistem memakai
+/// aturan bawaan pada sidebar CMS.
+model RoleMenu {
+  id        String   @id @default(cuid())
+  role      Role     @unique
+  menus     String[] // daftar key menu yang diizinkan untuk peran ini
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("role_menus")
 }
 
 model RefreshToken {
@@ -190,9 +204,15 @@ model Event {
   content        String?  @db.Text
   location       String?
   featuredImage  String?
-  startDate      DateTime
+  timeType       String   @default("DATE")
+  timeText       String?  @db.Text
+  startDate      DateTime?
   endDate        DateTime?
   allDay         Boolean  @default(false)
+  indikator      String?  @db.Text
+  buktiFisik     String?  @db.Text
+  tercapai       Boolean  @default(false)
+  keterangan     String?  @db.Text
   status         Status   @default(DRAFT)
   seoTitle       String?
   seoDescription String?  @db.Text
@@ -201,6 +221,69 @@ model Event {
 
   @@index([unit, startDate])
   @@map("events")
+}
+
+/// Program Kerja Waka Kesiswaan — daftar program & kegiatan kesiswaan beserta tujuan,
+/// uraian, estimasi waktu (sama seperti Agenda), dan penanggung jawab.
+model KesiswaanProgram {
+  id             String   @id @default(cuid())
+  unit           Unit     @default(SMK)
+  title          String // Program/Kegiatan
+  slug           String   @unique
+  objective      String?  @db.Text // Tujuan
+  description    String?  @db.Text // Uraian Kegiatan
+  personInCharge String? // Penanggung Jawab
+  timeType       String   @default("DATE") // DATE (rentang tanggal) | TEXT (estimasi teks)
+  timeText       String?  @db.Text // estimasi waktu teks bebas (mis. "Tiap semester")
+  startDate      DateTime?
+  endDate        DateTime?
+  status         Status   @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([unit, startDate])
+  @@map("kesiswaan_programs")
+}
+
+/// Bursa Kerja Khusus (BKK) — lowongan kerja dari mitra industri/perusahaan.
+model JobVacancy {
+  id             String    @id @default(cuid())
+  company        String // perusahaan
+  position       String // posisi lowongan kerja
+  location       String? // lokasi penempatan
+  employmentType String? // jenis: Penuh Waktu, Paruh Waktu, Magang, Kontrak
+  salary         String? // kisaran gaji (teks bebas)
+  description    String?   @db.Text // deskripsi lowongan
+  requirements   String?   @db.Text // kualifikasi/persyaratan
+  contact        String? // kontak pelamar
+  applyUrl       String? // tautan pendaftaran
+  image          String?  @db.Text // gambar/brosur lowongan (hanya tampil di halaman detail)
+  postedAt       DateTime  @default(now()) // tanggal terbit lowongan
+  deadline       DateTime? // batas akhir lamaran
+  status         Status    @default(DRAFT)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status, postedAt])
+  @@map("job_vacancies")
+}
+
+/// Kemitraan Dunia Usaha dan Industri (mitra industri).
+model IndustryPartner {
+  id          String   @id @default(cuid())
+  name        String // nama perusahaan
+  slug        String   @unique
+  logo        String? // logo perusahaan
+  description String?  @db.Text // deskripsi singkat
+  order       Int      @default(0)
+  status      Status   @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("industry_partners")
 }
 
 model Activity {
@@ -283,6 +366,57 @@ model Extracurricular {
   updatedAt   DateTime @updatedAt
 
   @@map("extracurriculars")
+}
+
+/// Showcase Karya DKV — galeri karya desain siswa (SMK Mardhotillah Plus)
+model DkvWork {
+  id             String    @id @default(cuid())
+  unit           Unit      @default(SMK)
+  title          String
+  slug           String    @unique
+  description    String?   @db.Text
+  image          String? // cover/thumbnail (opsional untuk PDF)
+  mediaType      String    @default("IMAGE") // IMAGE | PDF
+  file           String? // URL berkas PDF (dipakai saat mediaType = PDF)
+  category       String? // mis. Poster, Logo & Branding, Ilustrasi, Fotografi, Animasi
+  author         String? // nama siswa/kreator
+  workDate       DateTime? // tanggal karya
+  order          Int       @default(0)
+  featured       Boolean   @default(false)
+  status         Status    @default(DRAFT)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([unit, order])
+  @@map("dkv_works")
+}
+
+/// Jurnal DKV — arsip jurnal/dokumentasi DKV (SMK Mardhotillah Plus) dengan berkas PDF/DOC
+model DkvJournal {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  journalDate    DateTime? // tanggal jurnal
+  publishedAt    DateTime? // tanggal publikasi
+  summary        String?   @db.Text // penjelasan singkat
+  author         String? // dibuat oleh
+  content        String?   @db.Text // isi (HTML dari editor)
+  thumbnail      String? // thumbnail manual (opsional; bila kosong pakai pratinjau PDF)
+  fileUrl        String? // URL berkas PDF/DOC/DOCX
+  fileName       String? // nama asli berkas
+  status         Status    @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?   @db.Text
+  viewCount      Int       @default(0)
+  downloadCount  Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status, publishedAt])
+  @@map("dkv_journals")
 }
 
 // ============ GALLERY & MEDIA ============

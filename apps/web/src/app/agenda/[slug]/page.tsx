@@ -4,7 +4,7 @@ import { CalendarDays, MapPin } from "lucide-react";
 import { PageHero, Section } from "@/components/ui/section";
 import { apiServer, type EventItem } from "@/lib/api";
 import { resolveImageUrl } from "@/lib/api";
-import { formatEventDate } from "@/lib/site";
+import { formatEventTime } from "@/lib/site";
 
 export const revalidate = 60;
 
@@ -41,7 +41,7 @@ export default async function AgendaDetailPage({ params }: { params: Promise<{ s
         image={img ?? undefined}
       />
       <Section className="bg-cream">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto">
           <article className="overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-brand-900/5">
             {img && (
               <div className="relative aspect-[16/7] w-full bg-brand-100">
@@ -53,7 +53,7 @@ export default async function AgendaDetailPage({ params }: { params: Promise<{ s
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-soft">
                 <span className="inline-flex items-center gap-2">
                   <CalendarDays className="h-4 w-4 text-brand-500" aria-hidden />
-                  {formatEventDate(event.startDate, event.endDate, event.allDay)}
+                  {formatEventTime(event)}
                 </span>
                 {event.location && (
                   <span className="inline-flex items-center gap-2">

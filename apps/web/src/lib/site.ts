@@ -17,6 +17,7 @@ export const POST_TYPE_LABELS: Record<string, string> = {
   ARTIKEL: "Artikel",
   OPINI: "Opini Guru",
   POJOK_SISWA: "Pojok Siswa",
+  EVENT_KEGIATAN: "Event atau Kegiatan",
 };
 
 export const POST_TYPE_PATHS: Record<string, string> = {
@@ -24,6 +25,7 @@ export const POST_TYPE_PATHS: Record<string, string> = {
   ARTIKEL: "/artikel",
   OPINI: "/opini",
   POJOK_SISWA: "/pojok-siswa",
+  EVENT_KEGIATAN: "/kegiatan",
 };
 
 export function formatDate(iso?: string): string {
@@ -52,4 +54,17 @@ export function formatEventDate(start: string, end?: string, allDay?: boolean): 
   if (allDay) return `${d1} · Sepanjang hari`;
   const t = new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit" }).format(new Date(start));
   return `${d1} · ${t}`;
+}
+
+/** Label waktu agenda: mendukung mode tanggal (DATE) maupun teks kustom (TEXT). */
+export function formatEventTime(event: {
+  timeType?: string | null;
+  timeText?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  allDay?: boolean;
+}): string {
+  if (event.timeType === "TEXT") return event.timeText?.trim() || "Waktu menyusul";
+  if (!event.startDate) return "Waktu menyusul";
+  return formatEventDate(event.startDate, event.endDate ?? undefined, event.allDay);
 }

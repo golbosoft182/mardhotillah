@@ -78,7 +78,7 @@ export class PostsService {
   async create(dto: CreatePostDto, user?: { sub: string; role: string; unit: string | null }) {
     // OSIS hanya boleh membuat artikel sekolah dengan status REVIEW/DRAFT
     if (user?.role === 'OSIS') {
-      if (!['BERITA', 'ARTIKEL', 'OPINI', 'POJOK_SISWA'].includes(dto.type)) {
+      if (!['BERITA', 'ARTIKEL', 'OPINI', 'POJOK_SISWA', 'EVENT_KEGIATAN'].includes(dto.type)) {
         throw new ForbiddenException('OSIS hanya dapat membuat artikel sekolah');
       }
       if (dto.status && !['DRAFT', 'REVIEW'].includes(dto.status)) {
@@ -110,6 +110,7 @@ export class PostsService {
     const { tagIds, ...rest } = dto;
     const data: Record<string, unknown> = { ...rest };
     if (rest.publishedAt) data.publishedAt = new Date(rest.publishedAt);
+    else if (rest.status === 'PUBLISHED' && !post.publishedAt) data.publishedAt = new Date();
     if (tagIds) {
       data.tags = { deleteMany: {}, create: tagIds.map((tagId) => ({ tagId })) };
     }

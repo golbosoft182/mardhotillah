@@ -7,9 +7,10 @@ export default function TeachersPage() {
     <>
       <ResourceCrud
         title="Guru & Pimpinan"
-        description="Data guru dan pimpinan satuan pendidikan."
+        description="Data guru dan pimpinan satuan pendidikan. Ubah urutan dengan menarik ikon gagang atau menekan tombol naik/turun, lalu klik Simpan Urutan."
         endpoint="/teachers"
         createRoles={["SUPER_ADMIN", "ADMIN"]}
+        orderKey="order"
         initialForm={{ unit: "YAYASAN", isActive: true, order: 1 }}
         fields={[
           { key: "name", label: "Nama", required: true },
@@ -18,6 +19,13 @@ export default function TeachersPage() {
             { value: "YAYASAN", label: "Yayasan" }, { value: "PONPES", label: "Ponpes" },
             { value: "SMP", label: "SMP" }, { value: "SMK", label: "SMK" },
           ]},
+          { key: "isPimpinan", label: "Pimpinan", type: "checkbox", hint: "Tandai bila termasuk pimpinan",
+            render: (v) =>
+              v ? (
+                <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-700">Pimpinan</span>
+              ) : (
+                <span className="text-ink-soft/50">—</span>
+              ) },
           { key: "subject", label: "Mata Pelajaran", hideInTable: true },
           { key: "education", label: "Pendidikan Terakhir", hideInTable: true },
           { key: "email", label: "Email", hideInTable: true },
@@ -25,7 +33,6 @@ export default function TeachersPage() {
           { key: "bio", label: "Bio", type: "textarea", hideInTable: true },
           { key: "photo", label: "Foto (URL)", type: "image", hideInTable: true },
           { key: "order", label: "Urutan", type: "number", hideInTable: true },
-          { key: "isPimpinan", label: "Pimpinan", type: "checkbox", hideInTable: true, hint: "Tandai bila termasuk pimpinan" },
         ]}
       />
       <div className="mt-8">
@@ -34,6 +41,7 @@ export default function TeachersPage() {
           description="Data staff dan tenaga kependidikan."
           endpoint="/staff"
           createRoles={["SUPER_ADMIN", "ADMIN"]}
+          orderKey="order"
           initialForm={{ unit: "YAYASAN", isActive: true, order: 1 }}
           fields={[
             { key: "name", label: "Nama", required: true },

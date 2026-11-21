@@ -14,6 +14,8 @@ if (apiUrlParsed.port) apiImagePattern.port = apiUrlParsed.port;
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Di-inline ke bundle client agar redirect auth menghormati basePath /cms.
+  env: { NEXT_PUBLIC_ADMIN_BASE_PATH: basePath },
   ...(basePath ? { basePath } : {}),
   images: {
     remotePatterns: [

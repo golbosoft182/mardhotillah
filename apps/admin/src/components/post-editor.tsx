@@ -6,6 +6,7 @@ import { ChevronDown, Eye, ImageIcon, Save } from "lucide-react";
 import { api, can, getSession, API_URL } from "@/lib/auth";
 import { PageHeader } from "@/components/shell";
 import { AdminCard, ErrorAlert, Field, PrimaryButton, SecondaryButton, Select, SuccessAlert, TextArea, TextInput } from "@/components/ui";
+import { RichTextEditor } from "@/components/rich-text-editor";
 
 const UNITS = ["YAYASAN", "PONPES", "SMP", "SMK"];
 const TYPES = [
@@ -13,6 +14,7 @@ const TYPES = [
   { value: "ARTIKEL", label: "Artikel" },
   { value: "OPINI", label: "Opini Guru" },
   { value: "POJOK_SISWA", label: "Pojok Siswa" },
+  { value: "EVENT_KEGIATAN", label: "Event atau Kegiatan" },
 ];
 
 interface CatList {
@@ -28,6 +30,7 @@ export interface PostForm {
   content: string;
   featuredImage: string;
   status: string;
+  publishedAt: string;
   categoryId?: string;
   seoTitle: string;
   seoDescription: string;
@@ -45,6 +48,7 @@ export const EMPTY_POST: PostForm = {
   content: "",
   featuredImage: "",
   status: "DRAFT",
+  publishedAt: "",
   seoTitle: "",
   seoDescription: "",
   ogTitle: "",
@@ -166,12 +170,11 @@ export function PostEditor({ mode, postId, initial }: { mode: "create" | "edit";
             <Field label="Ringkasan (excerpt)" hint="Tampil di kartu berita & hasil pencarian. Biarkan kosong untuk dibuat otomatis.">
               <TextArea value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} placeholder="Ringkasan singkat isi artikel..." />
             </Field>
-            <Field label="Konten" hint="HTML sederhana didukung: <p>, <h2>, <h3>, <ul>, <img>, <blockquote>">
-              <TextArea
+            <Field label="Konten" hint="Editor visual — HTML sederhana (paragraf, judul, daftar, gambar, kutipan) didukung.">
+              <RichTextEditor
                 value={form.content}
-                onChange={(e) => set("content", e.target.value)}
-                className="min-h-[320px] font-mono text-[13px]"
-                placeholder="<p>Tulis konten di sini...</p>"
+                onChange={(html) => set("content", html)}
+                placeholder="Tulis konten artikel di sini..."
               />
             </Field>
           </AdminCard>
@@ -220,6 +223,13 @@ export function PostEditor({ mode, postId, initial }: { mode: "create" | "edit";
               <Select value={form.status} onChange={(e) => set("status", e.target.value)}>
                 {statusOptions.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
               </Select>
+            </Field>
+            <Field label="Tanggal Publikasi" hint="Atur waktu terbit berita/artikel. Kosongkan untuk mengikuti waktu sistem.">
+              <TextInput
+                type="datetime-local"
+                value={form.publishedAt}
+                onChange={(e) => set("publishedAt", e.target.value)}
+              />
             </Field>
             <Field label="Jenis">
               <Select value={form.type} onChange={(e) => set("type", e.target.value)}>

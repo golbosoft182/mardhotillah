@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { MenusService } from './menus.service';
+import { MenusService, type MenuItemInput } from './menus.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard, Roles } from '../common/guards/roles.guard';
 import { Public } from '../common/decorators/public.decorator';
@@ -30,7 +30,7 @@ export class MenusController {
   @Put(':location')
   async save(
     @Param('location') location: 'HEADER' | 'FOOTER',
-    @Body() body: { items: { label: string; url: string; order?: number; parentId?: string | null }[] },
+    @Body() body: { items: MenuItemInput[] },
   ) {
     return this.menus.upsertByLocation(location, body.items ?? []);
   }

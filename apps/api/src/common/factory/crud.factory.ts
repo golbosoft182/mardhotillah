@@ -13,7 +13,7 @@ export interface CrudConfig {
   fields: string[];
   /** field pencarian teks */
   searchFields?: string[];
-  orderBy?: Record<string, 'asc' | 'desc'>;
+  orderBy?: unknown;
   /** role minimal untuk tulis */
   writeRoles: AppRole[];
   /** GET list/detail publik? */
@@ -30,6 +30,10 @@ export interface CrudConfig {
   emptyToNull?: string[];
   /** relasi prisma yang disertakan pada list & detail */
   include?: Record<string, unknown>;
+  /** peta keyword `?sort=` → klausa orderBy Prisma (mis. `{ newest: [{ startDate: 'desc' }] }`) */
+  sortOrderBy?: Record<string, unknown>;
+  /** field tanggal untuk filter bulanan `?month=YYYY-MM` */
+  monthField?: string;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -68,18 +72,33 @@ export function makeCrudService(cfg: CrudConfig) {
       unit?: string;
       status?: string;
       q?: string;
+      sort?: string;
+      month?: string;
       extra?: Record<string, any>;
     }) {
       const page = params.page ?? 1;
       const limit = Math.min(params.limit ?? 20, 100);
-      const where = this.buildWhere({ ...params, extra: params.extra });
+      const extra: Record<string, any> = { ...(params.extra ?? {}) };
+      // Filter bulanan (?month=YYYY-MM) → rentang tanggal [awal bulan, awal bulan berikutnya)
+      if (params.month && cfg.monthField) {
+        const [y, m] = params.month.split('-').map(Number);
+        if (y && m >= 1 && m <= 12) {
+          extra[cfg.monthField] = {
+            gte: new Date(Date.UTC(y, m - 1, 1)),
+            lt: new Date(Date.UTC(y, m, 1)),
+          };
+        }
+      }
+      const where = this.buildWhere({ ...params, extra: extra });
+      const orderBy =
+        (params.sort ? cfg.sortOrderBy?.[params.sort] : undefined) ?? cfg.orderBy ?? { updatedAt: 'desc' };
       const [items, total] = await Promise.all([
         this.delegate.findMany({
           where,
           ...(cfg.include ? { include: cfg.include } : {}),
           skip: (page - 1) * limit,
           take: limit,
-          orderBy: cfg.orderBy ?? { updatedAt: 'desc' },
+          orderBy,
         }),
         this.delegate.count({ where }),
       ]);
@@ -184,13 +203,20 @@ export function makeCrudController(prefix: string, tag: string, cfg: CrudConfig)
       @Query('unit') unit?: string,
       @Query('status') status?: string,
       @Query('q') q?: string,
+      @Query('sort') sort?: string,
+      @Query('month') month?: string,
     ) {
+      // `status=ALL` → tampilkan semua status (dipakai CMS untuk melihat draft juga).
+      const statusFilter =
+        status === 'ALL' ? undefined : (status ?? (cfg.publicStatusFilter ? 'PUBLISHED' : undefined));
       return this.svc.list({
         page: page ? Number(page) : 1,
         limit: limit ? Number(limit) : 20,
         unit,
-        status: status ?? (cfg.publicStatusFilter ? 'PUBLISHED' : undefined),
+        status: statusFilter,
         q,
+        sort,
+        month,
       });
     }
 

@@ -39,14 +39,32 @@ export const PagesModule = makeCrudModule('pages', 'pages', {
 
 export const EventsModule = makeCrudModule('events', 'events', {
   model: 'event',
-  fields: ['unit', 'title', 'slug', 'description', 'content', 'location', 'featuredImage', 'startDate', 'endDate', 'allDay', 'status', 'seoTitle', 'seoDescription'],
+  fields: ['unit', 'title', 'slug', 'description', 'content', 'location', 'featuredImage', 'timeType', 'timeText', 'startDate', 'endDate', 'allDay', 'indikator', 'buktiFisik', 'tercapai', 'keterangan', 'status', 'seoTitle', 'seoDescription'],
   searchFields: ['title'],
-  orderBy: { startDate: 'asc' },
+  orderBy: [{ startDate: { sort: 'asc', nulls: 'last' } }, { title: 'asc' }],
   writeRoles: WRITE_EDITOR,
   publicRead: true,
   publicStatusFilter: true,
   slugFrom: 'title',
   dateFields: ['startDate', 'endDate'],
+  emptyToNull: ['location', 'indikator', 'buktiFisik', 'keterangan', 'timeText'],
+  sortOrderBy: { newest: [{ startDate: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }] },
+  monthField: 'startDate',
+});
+
+export const KesiswaanProgramsModule = makeCrudModule('kesiswaan-programs', 'kesiswaan-programs', {
+  model: 'kesiswaanProgram',
+  fields: ['unit', 'title', 'slug', 'objective', 'description', 'personInCharge', 'timeType', 'timeText', 'startDate', 'endDate', 'status', 'seoTitle', 'seoDescription'],
+  searchFields: ['title', 'personInCharge', 'objective', 'description'],
+  orderBy: [{ startDate: { sort: 'asc', nulls: 'last' } }, { title: 'asc' }],
+  writeRoles: WRITE_EDITOR,
+  publicRead: true,
+  publicStatusFilter: true,
+  slugFrom: 'title',
+  dateFields: ['startDate', 'endDate'],
+  emptyToNull: ['objective', 'description', 'personInCharge', 'timeText'],
+  sortOrderBy: { newest: [{ startDate: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }] },
+  monthField: 'startDate',
 });
 
 export const ActivitiesModule = makeCrudModule('activities', 'activities', {
@@ -59,6 +77,7 @@ export const ActivitiesModule = makeCrudModule('activities', 'activities', {
   publicStatusFilter: true,
   slugFrom: 'title',
   dateFields: ['publishedAt'],
+  sortOrderBy: { newest: [{ publishedAt: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }] },
 });
 
 export const AchievementsModule = makeCrudModule('achievements', 'achievements', {
@@ -69,6 +88,7 @@ export const AchievementsModule = makeCrudModule('achievements', 'achievements',
   publicRead: true,
   publicStatusFilter: true,
   dateFields: ['date', 'publishedAt'],
+  sortOrderBy: { newest: [{ date: { sort: 'desc', nulls: 'last' } }, { year: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }] },
 });
 
 export const ProgramsModule = makeCrudModule('programs', 'programs', {
@@ -82,6 +102,34 @@ export const ProgramsModule = makeCrudModule('programs', 'programs', {
   includeGlobal: true,
   slugFrom: 'name',
   emptyToNull: ['unit'],
+});
+
+export const DkvWorksModule = makeCrudModule('dkv-works', 'dkv-works', {
+  model: 'dkvWork',
+  fields: ['unit', 'title', 'slug', 'description', 'image', 'mediaType', 'file', 'category', 'author', 'workDate', 'order', 'featured', 'status', 'publishedAt', 'seoTitle', 'seoDescription'],
+  searchFields: ['title', 'description', 'category', 'author'],
+  orderBy: { workDate: 'desc' },
+  writeRoles: WRITE_EDITOR,
+  publicRead: true,
+  publicStatusFilter: true,
+  slugFrom: 'title',
+  dateFields: ['workDate', 'publishedAt'],
+  sortOrderBy: { newest: [{ workDate: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }] },
+  monthField: 'workDate',
+});
+
+export const DkvJournalsModule = makeCrudModule('dkv-journals', 'dkv-journals', {
+  model: 'dkvJournal',
+  fields: ['title', 'slug', 'journalDate', 'publishedAt', 'summary', 'author', 'content', 'thumbnail', 'fileUrl', 'fileName', 'status', 'seoTitle', 'seoDescription'],
+  searchFields: ['title', 'author', 'summary'],
+  orderBy: [{ publishedAt: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }],
+  writeRoles: WRITE_EDITOR,
+  publicRead: true,
+  publicStatusFilter: true,
+  slugFrom: 'title',
+  dateFields: ['journalDate', 'publishedAt'],
+  sortOrderBy: { newest: [{ publishedAt: { sort: 'desc', nulls: 'last' } }, { journalDate: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }] },
+  monthField: 'publishedAt',
 });
 
 export const ExtracurricularsModule = makeCrudModule('extracurriculars', 'extracurriculars', {
@@ -154,4 +202,16 @@ export const StudentsModule = makeCrudModule('students', 'students', {
   writeRoles: WRITE_EDITOR,
   publicRead: true,
   publicStatusFilter: true,
+});
+
+export const IndustryPartnersModule = makeCrudModule('industry-partners', 'industry-partners', {
+  model: 'industryPartner',
+  fields: ['name', 'slug', 'logo', 'description', 'order', 'status', 'publishedAt'],
+  searchFields: ['name', 'description'],
+  orderBy: { order: 'asc' },
+  writeRoles: WRITE_EDITOR,
+  publicRead: true,
+  publicStatusFilter: true,
+  slugFrom: 'name',
+  dateFields: ['publishedAt'],
 });

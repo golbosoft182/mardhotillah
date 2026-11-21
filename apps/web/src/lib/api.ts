@@ -95,9 +95,112 @@ export interface EventItem {
   description?: string;
   location?: string;
   featuredImage?: string;
-  startDate: string;
-  endDate?: string;
+  /** DATE (rentang tanggal) | TEXT (teks kustom, mis. "Tiap semester") */
+  timeType?: string | null;
+  /** teks waktu bebas saat timeType = TEXT */
+  timeText?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
   allDay: boolean;
+}
+
+export interface KesiswaanProgram {
+  id: string;
+  unit?: Unit | null;
+  title: string;
+  slug: string;
+  /** Tujuan */
+  objective?: string | null;
+  /** Uraian Kegiatan */
+  description?: string | null;
+  /** Penanggung Jawab */
+  personInCharge?: string | null;
+  /** DATE (rentang tanggal) | TEXT (estimasi teks, mis. "Tiap semester") */
+  timeType?: string | null;
+  /** estimasi waktu teks bebas saat timeType = TEXT */
+  timeText?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  status?: string;
+}
+
+export interface Activity {
+  id: string;
+  unit: Unit;
+  title: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  category?: string | null;
+}
+
+export interface JobVacancy {
+  id: string;
+  /** perusahaan */
+  company: string;
+  /** posisi lowongan kerja */
+  position: string;
+  location?: string | null;
+  /** jenis: Penuh Waktu, Paruh Waktu, Kontrak, Magang, Freelance */
+  employmentType?: string | null;
+  salary?: string | null;
+  description?: string | null;
+  requirements?: string | null;
+  contact?: string | null;
+  applyUrl?: string | null;
+  /** gambar/brosur lowongan (hanya tampil di halaman detail) */
+  image?: string | null;
+  /** tanggal terbit lowongan */
+  postedAt?: string | null;
+  /** batas akhir lamaran */
+  deadline?: string | null;
+  status?: string;
+}
+
+export interface IndustryPartner {
+  id: string;
+  /** nama perusahaan */
+  name: string;
+  slug: string;
+  /** logo perusahaan */
+  logo?: string | null;
+  /** deskripsi singkat */
+  description?: string | null;
+  order?: number;
+  status?: string;
+}
+
+export interface DkvWork {
+  id: string;
+  unit?: Unit | null;
+  title: string;
+  slug: string;
+  description?: string | null;
+  image?: string | null;
+  /** IMAGE | PDF */
+  mediaType?: string | null;
+  /** URL berkas PDF (saat mediaType = PDF) */
+  file?: string | null;
+  category?: string | null;
+  author?: string | null;
+  workDate?: string | null;
+}
+
+export interface DkvJournal {
+  id: string;
+  title: string;
+  slug: string;
+  journalDate?: string | null;
+  publishedAt?: string | null;
+  summary?: string | null;
+  author?: string | null;
+  content?: string | null;
+  thumbnail?: string | null;
+  fileUrl?: string | null;
+  fileName?: string | null;
+  status?: string;
+  viewCount: number;
+  downloadCount: number;
 }
 
 export interface Achievement {
@@ -121,9 +224,14 @@ export interface Program {
   name: string;
   slug: string;
   description?: string;
+  content?: string;
   icon?: string;
   image?: string;
   featured: boolean;
+  order?: number;
+  status?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export interface GalleryItem {

@@ -16,6 +16,10 @@ Situs resmi **Yayasan Mardhotillah** (Ponpes · SMP · SMK) yang dibangun sebaga
 ### Website Publik (apps/web)
 - **Semua konten dinamis dari CMS** — tidak ada teks hardcode: hero, section beranda, berita, agenda, prestasi, galeri, program, fasilitas, guru, halaman tentang, SPMB, menu navigasi, kontak, pengumuman.
 - **Mega menu** desktop (panel multi-kolom + kartu promo) dan drawer accordion di mobile.
+- **Bursa Kerja Khusus (BKK)** — daftar lowongan dari mitra industri dengan **filter perusahaan, posisi, dan rentang tanggal**; tiap lowongan punya halaman **detail lamaran** (informasi + gambar).
+- **Mitra Industri** — halaman listing & detail perusahaan mitra (Kemitraan Dunia Usaha dan Industri).
+- **Program Kerja Kesiswaan** — program kerja Waka Kesiswaan (listing + detail).
+- **Jurnal & Karya DKV** — publikasi jurnal dan galeri karya siswa jurusan Desain Komunikasi Visual.
 - **Popup SPMB** — flyer + link tampil di semua halaman tiap refresh, bisa ditutup (✕ pojok kanan atas), jadwal tayang & ukuran per perangkat (desktop/tablet/mobile) diatur dari CMS.
 - **Multi-bahasa otomatis** — Indonesia (default) / English / Arabic via Google Translate, tombol bendera di topbar.
 - **Topbar**: jam sistem live (hari, tanggal, jam WIB) + pemilih bahasa.
@@ -35,10 +39,15 @@ Panel sederhana — tidak rumit — dengan menu:
 | **Popup SPMB** | Ganti flyer/link/jadwal/ukuran popup setiap tahun ajaran |
 | **Media** | Upload & kelola gambar |
 | **Kategori & Tag / Program / Guru / Fasilitas** | Master data konten |
+| **Ekstrakurikuler** | Daftar ekstrakurikuler sekolah |
+| **Program Kerja Kesiswaan** | Program kerja Waka Kesiswaan |
+| **Jurnal & Karya DKV** | Jurnal dan karya siswa jurusan DKV |
+| **Bursa Kerja Khusus** | Kelola lowongan kerja mitra + gambar untuk halaman detail |
+| **Mitra Industri** | Kelola perusahaan mitra (nama, logo, deskripsi) |
 | **SPMB** | Periode SPMB, persyaratan, jadwal, alur, biaya, FAQ |
 | **Menu Navigasi** | Susun menu header (sub-menu otomatis jadi mega menu) |
 | **SEO** | Metadata tiap halaman kunci |
-| **Pengguna** | Kelola user & role (Super Admin/Admin saja) |
+| **Pengguna** | Kelola user & role + **akses menu CMS per peran** (Super Admin/Admin) |
 | **Pengaturan** | Nama situs, kontak, sosmed, pengumuman, hero beranda |
 
 ### API (apps/api)
@@ -55,6 +64,8 @@ Panel sederhana — tidak rumit — dengan menu:
 | **ADMIN** | ✅ semua | ✅ | ✅ | SEO, menu, SPMB, media |
 | **EDITOR** | ✅ semua | ✅ | ❌ | Tidak bisa hapus data |
 | **OSIS** | ✅ | Hanya artikel sekolah miliknya | ❌ | Status wajib **Draft/Review** → Admin yang mem-publish |
+
+> 🔐 **Akses menu per peran:** selain peran di atas, menu CMS yang boleh diakses tiap peran dapat dikontrol dari **Pengguna → Akses Menu per Peran** (`/cms/users`). Bila belum diatur, sistem memakai aturan bawaan sidebar; `SUPER_ADMIN` selalu akses penuh dan menu Dashboard selalu tampil.
 
 **Akun demo (seed):**
 
@@ -182,6 +193,11 @@ Buka **http://localhost:3102/docs** — semua endpoint terdokumentasi + bisa dic
 | GET | `/api/popup/active` | publik | Popup SPMB aktif |
 | GET/POST/PUT/DELETE | `/api/popup` | ADMIN | Kelola popup (satu aktif) |
 | GET | `/api/ppdb/active` | publik | Konten SPMB + FAQ periode aktif |
+| GET/POST/PUT/DELETE | `/api/job-vacancies` | publik / EDITOR+ | Lowongan BKK (`?company= &position= &from= &to= &status=`) |
+| GET | `/api/job-vacancies/filters` | publik | Opsi filter perusahaan & posisi untuk dropdown |
+| GET/POST/PUT/DELETE | `/api/industry-partners` | publik / EDITOR+ | Mitra industri (detail via `/slug/:slug`) |
+| GET/PUT | `/api/role-menus` | ADMIN | Akses menu CMS per peran |
+| GET | `/api/role-menus/me` | login | Akses menu untuk peran pengguna aktif |
 | GET/PUT | `/api/settings` | publik / ADMIN | Pengaturan situs |
 | GET/PUT | `/api/seo/:pageKey` | publik / ADMIN | SEO per halaman |
 | GET/POST | `/api/menus` | publik / ADMIN | Menu navigasi (nested) |

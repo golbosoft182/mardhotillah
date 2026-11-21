@@ -2,6 +2,9 @@
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3102";
 
+/** basePath admin (di-inline saat build lewat `env` di next.config); kosong di dev. */
+const BASE_PATH = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH ?? "";
+
 export interface AdminUser {
   id: string;
   name: string;
@@ -88,13 +91,56 @@ export function can(user: AdminUser | null, capability: string): boolean {
   return Boolean(caps?.[capability]);
 }
 
-/** Fetch dengan access token; auto-refresh sekali bila 401 */
+/** True bila JWT mendekati kedaluwarsa (default ≤60 detik sebelum exp). */
+function isTokenExpiring(token: string, skewMs = 60_000): boolean {
+  try {
+    const base64 = token.split(".")[1]?.replace(/-/g, "+").replace(/_/g, "/");
+    if (!base64) return false;
+    const payload = JSON.parse(atob(base64)) as { exp?: number };
+    if (typeof payload.exp !== "number") return false;
+    return payload.exp * 1000 - Date.now() <= skewMs;
+  } catch {
+    return false;
+  }
+}
+
+// Single-flight: request bersamaan berbagi satu proses refresh yang sama, sehingga
+// refresh token (rotasi sekali pakai) tidak saling membatalkan saat banyak request 401.
+let refreshPromise: Promise<Session | null> | null = null;
+
+function refreshSession(): Promise<Session | null> {
+  if (!refreshPromise) {
+    refreshPromise = (async () => {
+      const current = getSession();
+      if (!current?.refreshToken) return null;
+      const res = await fetch(`${API_URL}/api/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: current.refreshToken }),
+      });
+      if (!res.ok) return null;
+      const next = (await res.json()) as Session;
+      setSession(next);
+      return next;
+    })().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
+}
+
+function forceLogout(): never {
+  clearSession();
+  window.location.href = `${BASE_PATH}/login`;
+  throw new Error("Sesi berakhir, silakan login kembali");
+}
+
+/** Fetch dengan access token; refresh proaktif bila token kedaluwarsa/mendekati. */
 export async function api<T>(
   path: string,
   options: { method?: string; body?: unknown } = {},
 ): Promise<T> {
-  const session = getSession();
-  const doFetch = async (token: string | null) =>
+  const doFetch = (token: string | null) =>
     fetch(`${API_URL}/api${path}`, {
       method: options.method ?? "GET",
       headers: {
@@ -104,22 +150,22 @@ export async function api<T>(
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
     });
 
+  let session = getSession();
+
+  // Refresh lebih dulu agar tidak memicu 401 (menghindari spam error di console).
+  if (session?.refreshToken && session.accessToken && isTokenExpiring(session.accessToken)) {
+    const refreshed = await refreshSession();
+    if (refreshed) session = refreshed;
+  }
+
   let res = await doFetch(session?.accessToken ?? null);
 
   if (res.status === 401 && session?.refreshToken) {
-    const refreshRes = await fetch(`${API_URL}/api/auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: session.refreshToken }),
-    });
-    if (refreshRes.ok) {
-      const newSession = (await refreshRes.json()) as Session;
-      setSession(newSession);
-      res = await doFetch(newSession.accessToken);
+    const refreshed = await refreshSession();
+    if (refreshed) {
+      res = await doFetch(refreshed.accessToken);
     } else {
-      clearSession();
-      window.location.href = "/login";
-      throw new Error("Sesi berakhir, silakan login kembali");
+      forceLogout();
     }
   }
 
